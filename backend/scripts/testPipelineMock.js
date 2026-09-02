@@ -1,5 +1,5 @@
 /**
- * Prueba del pipeline completo (Día 4 validación de IA) SIN llamadas a OpenAI.
+ * Prueba del pipeline completo (Día 4 validación de IA) SIN llamadas a la API de IA.
  * Mockea las funciones de aiService para simular clasificación/resumen/
  * extracción/embeddings, y ejecuta processDocument contra la BD real.
  *
@@ -23,7 +23,7 @@ if (!DOC_ID) {
   process.exit(1);
 }
 
-// ---- Inyectamos mocks en las funciones de IA (sin red a OpenAI) ----
+// ---- Inyectamos mocks en las funciones de IA (sin red a la API) ----
 // Deterministas, para poder validar el resultado.
 let counter = 0;
 function nextText(prefix) {

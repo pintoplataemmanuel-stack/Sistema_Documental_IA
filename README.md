@@ -45,7 +45,7 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 | Backend | Node.js + Express |
 | Base de datos | MongoDB Atlas (datos + vectores) |
 | Autenticación | JWT + bcrypt |
-| IA | OpenAI API (clasificación, resumen, extracción, embeddings) |
+| IA | Google Gemini API (clasificación, resumen, extracción, embeddings) |
 | Búsqueda | Búsqueda de texto + MongoDB Atlas Vector Search |
 | Control de versiones | Git + GitHub |
 
@@ -56,7 +56,7 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 ### Requisitos previos
 - Node.js 18+ y npm
 - Cuenta de MongoDB Atlas con un cluster
-- API key de OpenAI
+- API key de Google Gemini
 
 ### Backend
 1. `cd backend`

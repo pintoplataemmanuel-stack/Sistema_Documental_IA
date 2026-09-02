@@ -22,7 +22,7 @@ backend, base de datos en la nube (MongoDB Atlas) y consumo de servicios de IA e
                                   ┌───────────────────────┼────────────────────────┐
                                   │                       │                        │
                           ┌───────▼────────┐      ┌───────▼─────────┐      ┌───────▼──────┐
-                          │  MongoDB Atlas │      │   OpenAI API    │      │   Uploads    │
+                          │  MongoDB Atlas │      │   Gemini API    │      │   Uploads    │
                           │  (datos)       │      │  (chat/embedd.) │      │  (archivos)  │
                           │  Vector Search │      └─────────────────┘      └──────────────┘
                           └────────────────┘
@@ -33,7 +33,7 @@ backend, base de datos en la nube (MongoDB Atlas) y consumo de servicios de IA e
 - **Base de datos:** MongoDB Atlas guarda datos (usuarios, repositorios, documentos, logs)
   y los vectores (embeddings). MongoDB Atlas **Vector Search** permite búsqueda semántica
   sin levantar infraestructura adicional.
-- **IA externa:** OpenAI API. Se usan dos modelos:
+- **IA externa:** Gemini API. Se usan dos modelos:
   - Chat/completions → clasificación, resumen, extracción de campos y respuestas RAG.
   - Embeddings → representación vectorial de fragmentos de texto.
 - **Almacenamiento de archivos:** el sistema de archivos local del backend
@@ -80,7 +80,7 @@ backend/src/
   controllers/  -> lógica de negocio por recurso (auth, repository, file, ai)
   routes/       -> definición de endpoints REST
   middleware/   -> authMiddleware, authorize, uploadMiddleware, errorMiddleware
-  services/     -> aiService (OpenAI), extractionService (PDF/DOCX/TXT), embeddingService
+  services/     -> aiService (Gemini), extractionService (PDF/DOCX/TXT), embeddingService
   utils/        -> generateToken, respuestas helpers
   server.js     -> punto de entrada
 ```
@@ -133,7 +133,7 @@ aiService
 └───────────┬──────────────────────────────────────┼──────────────┘
             │                                      │
    ┌────────▼────────┐                  ┌──────────▼──────────┐
-   │ MongoDB Atlas   │                  │  OpenAI API         │
+   │ MongoDB Atlas   │                  │  Gemini API         │
    │ (docs + vector) │                  │  chat + embeddings  │
    └─────────────────┘                  └─────────────────────┘
 ```
@@ -155,7 +155,7 @@ aiService
                                  MongoDB    │          │ HTTPS
                                  Atlas      │          └─────────────┐
                             ┌───────────────▼──────┐      ┌──────────▼─────────┐
-                            │  Cluster (datos +    │      │  OpenAI API        │
+                            │  Cluster (datos +    │      │  Gemini API        │
                             │  vector search)      │      │  (servicio externo)│
                             └──────────────────────┘      └────────────────────┘
 ```
@@ -172,7 +172,7 @@ a `.env` → `npm run dev`. La BD vive en Atlas (nube) y solo la API/UI corren e
 ### 5.1 Carga y procesamiento de un documento
 
 ```
-Usuario      Frontend          Backend              MongoDB             OpenAI
+Usuario      Frontend          Backend              MongoDB             Gemini
   │              │                 │                    │                  │
   │  sube file   │                 │                    │                  │
   ├─────────────▶│ POST /files/upload multipart        │                  │
@@ -202,7 +202,7 @@ Usuario      Frontend          Backend              MongoDB             OpenAI
 ### 5.2 Consulta en lenguaje natural (RAG)
 
 ```
-Usuario      Frontend                 Backend               MongoDB             OpenAI
+Usuario      Frontend                 Backend               MongoDB             Gemini
   │              │                       │                     │                  │
   │ pregunta     │                       │                     │                  │
   ├─────────────▶│  POST /ask {question} │                     │                  │
@@ -349,8 +349,8 @@ Usuario      Frontend                 Backend               MongoDB             
 
 | Tarea | Modelo | Justificación |
 |-------|--------|---------------|
-| Clasificación, resumen, extracción, RAG | `gpt-4o-mini` | Precisión suficiente con costo y latencia bajos; manejo de JSON. |
-| Embeddings | `text-embedding-3-small` | 1536 dimensiones, costo bajo, buena calidad para RAG. |
+| Clasificación, resumen, extracción, RAG | `gemini-3.6-flash` | Modelo flash gratuito de Gemini; salida JSON estricta; latencia baja. |
+| Embeddings | `gemini-embedding-001` | 768 dimensiones (configurables), gratuito en el tier free, buena calidad para RAG. |
 
 ### 8.2 Prompts (español)
 
@@ -370,7 +370,7 @@ Usuario      Frontend                 Backend               MongoDB             
 2. Se genera `embedding(question)`.
 3. Atlas Vector Search devuelve los top-k fragmentos más similares.
 4. Se arma prompt: `Contexto: ... \n Pregunta: ...`.
-5. `gpt-4o-mini` responde con base en el contexto e indicamos los documentos fuente.
+5. `gemini-3.6-flash` responde con base en el contexto e indicamos los documentos fuente.
 
 ### 8.4 Justificación de RAG + embeddings sobre BD vectorial aparte
 
@@ -399,7 +399,7 @@ menor costo y administración, y es escalable al mismo motor de búsqueda.
    (7 días por defecto). Middleware `protect` valida el `Authorization: Bearer`.
 3. **Roles:** middleware `authorize(roles...)` restringe acciones sensibles (admin/owner).
 4. **Variables de entorno:** `.env` fuera del repo (ver `.gitignore`); `.env.example`
-   documenta las variables requeridas. Clave de OpenAI y URI de Atlas nunca versionadas.
+   documenta las variables requeridas. Clave de Gemini y URI de Atlas nunca versionadas.
 5. **Validación de archivos:** extensión + MIME permitidos (PDF/DOCX/TXT) y límite de
    tamaño (10 MB). Nombre de almacenamiento generado por el servidor (timestamp+random),
    evitando path traversal y colisiones.

@@ -11,10 +11,19 @@ module.exports = {
     secret: process.env.JWT_SECRET || "dev_secret_no_usar_en_produccion",
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   },
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || "",
-    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-    embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small",
+  gemini: {
+    // Nombres canónicos GEMINI_*; se mantienen OPENAI_* como fallback por compatibilidad.
+    apiKey: process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || "",
+    model:
+      process.env.GEMINI_MODEL ||
+      process.env.OPENAI_MODEL ||
+      "gemini-3.6-flash",
+    embeddingModel:
+      process.env.GEMINI_EMBEDDING_MODEL ||
+      process.env.OPENAI_EMBEDDING_MODEL ||
+      "gemini-embedding-001",
+    embeddingDimensions:
+      Number(process.env.GEMINI_EMBEDDING_DIMENSIONS) || 768,
   },
   ai: {
     chunkSize: Number(process.env.AI_CHUNK_SIZE) || 1500,
