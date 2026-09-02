@@ -218,5 +218,6 @@ module.exports = {
   getFileById,
   downloadFile,
   deleteFile,
+  getDocumentForUserOrFail,
   PROCESSING_STEPS,
 };

@@ -15,6 +15,12 @@ module.exports = {
     model: process.env.OPENAI_MODEL || "gpt-4o-mini",
     embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small",
   },
+  ai: {
+    chunkSize: Number(process.env.AI_CHUNK_SIZE) || 1500,
+    chunkOverlap: Number(process.env.AI_CHUNK_OVERLAP) || 150,
+    maxChunksToEmbed: Number(process.env.AI_MAX_CHUNKS) || 20,
+    chatTextLimit: Number(process.env.AI_CHAT_TEXT_LIMIT) || 6000,
+  },
   limits: {
     maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB) || 10,
   },
