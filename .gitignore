@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno (¡nunca subir al repositorio!)
+.env
+.env.local
+
+# Archivos subidos
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.swp
+
+# Reportes de cobertura
+coverage/
