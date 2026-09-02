@@ -4,7 +4,7 @@ module.exports = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || "development",
   mongodbUri:
-    process.env.MONGODB_URI ||
+    process.env.MONGO_URI ||
     "mongodb://localhost:27017/sistema_documental",
   jwt: {
     secret: process.env.JWT_SECRET || "dev_secret_no_usar_en_produccion",
