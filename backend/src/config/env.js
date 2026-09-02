@@ -4,6 +4,7 @@ module.exports = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || "development",
   mongodbUri:
+    process.env.MONGODB_URI ||
     process.env.MONGO_URI ||
     "mongodb://localhost:27017/sistema_documental",
   jwt: {
@@ -20,6 +21,8 @@ module.exports = {
     chunkOverlap: Number(process.env.AI_CHUNK_OVERLAP) || 150,
     maxChunksToEmbed: Number(process.env.AI_MAX_CHUNKS) || 20,
     chatTextLimit: Number(process.env.AI_CHAT_TEXT_LIMIT) || 6000,
+    // Umbral (ms) para considerar "colgado" un documento en processing.
+    staleMs: Number(process.env.AI_PROCESS_STALE_MS) || 5 * 60 * 1000,
   },
   limits: {
     maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB) || 10,
