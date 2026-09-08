@@ -1,4 +1,5 @@
-const API_BASE = (import.meta.env.VITE_API_BASE || '/api').replace(/\/+$/, '');
+const PROD_API = 'https://sistema-documental-ia.onrender.com';
+const API_BASE = (import.meta.env.VITE_API_BASE || PROD_API).replace(/\/+$/, '');
 
 export function apiUrl(path) {
   return `${API_BASE}${path}`;

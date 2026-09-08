@@ -2,10 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-const authRoutes = require("./routes/authRoutes");
-const repositoryRoutes = require("./routes/repositoryRoutes");
-const fileRoutes = require("./routes/fileRoutes");
-const searchRoutes = require("./routes/searchRoutes");
+const apiRoutes = require("./routes/index");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -52,11 +49,8 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Rutas
-app.use("/api/auth", authRoutes);
-app.use("/api/repos", repositoryRoutes);
-app.use("/api/files", fileRoutes);
-app.use("/api/search", searchRoutes);
+// Rutas (todas bajo el prefijo /api)
+app.use("/api", apiRoutes);
 
 // Manejo de errores
 app.use(notFound);
