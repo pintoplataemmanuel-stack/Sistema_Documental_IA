@@ -7,6 +7,7 @@ import {
   SearchIcon,
   LogoutIcon,
   SparklesIcon,
+  HelpIcon,
 } from './Icons';
 
 const NAV = [
@@ -16,7 +17,7 @@ const NAV = [
   { to: '/search', label: 'Búsqueda Inteligente', icon: SearchIcon },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onOpenHelp }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -59,6 +60,13 @@ export default function Sidebar() {
               <span className="sb-label">{label}</span>
             </NavLink>
           ))}
+        </nav>
+
+        <nav className="sb-nav sb-nav-help">
+          <button className="sb-link" onClick={onOpenHelp}>
+            <HelpIcon />
+            <span className="sb-label">Cómo usar</span>
+          </button>
         </nav>
 
         <div className="sb-footer">
