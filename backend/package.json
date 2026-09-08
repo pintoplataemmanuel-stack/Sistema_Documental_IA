@@ -25,6 +25,7 @@
     "mammoth": "^1.12.2",
     "mongoose": "^8.7.0",
     "multer": "^2.3.0",
+    "openai": "^7.10.0",
     "pdfjs-dist": "^6.3.289"
   }
 }

@@ -11,19 +11,13 @@ module.exports = {
     secret: process.env.JWT_SECRET || "dev_secret_no_usar_en_produccion",
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   },
-  gemini: {
-    // Nombres canónicos GEMINI_*; se mantienen OPENAI_* como fallback por compatibilidad.
-    apiKey: process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || "",
-    model:
-      process.env.GEMINI_MODEL ||
-      process.env.OPENAI_MODEL ||
-      "gemini-3.6-flash",
+  openai: {
+    // API compatible con OpenAI (p. ej. OpenRouter, DeepSeek, OpenAI).
+    apiKey: process.env.OPENAI_API_KEY || "",
+    baseUrl: process.env.OPENAI_BASE_URL || "https://openrouter.ai/api/v1",
+    model: process.env.OPENAI_MODEL || "deepseek/deepseek-chat",
     embeddingModel:
-      process.env.GEMINI_EMBEDDING_MODEL ||
-      process.env.OPENAI_EMBEDDING_MODEL ||
-      "gemini-embedding-001",
-    embeddingDimensions:
-      Number(process.env.GEMINI_EMBEDDING_DIMENSIONS) || 768,
+      process.env.OPENAI_EMBEDDING_MODEL || "openai/text-embedding-3-small",
   },
   ai: {
     chunkSize: Number(process.env.AI_CHUNK_SIZE) || 1500,

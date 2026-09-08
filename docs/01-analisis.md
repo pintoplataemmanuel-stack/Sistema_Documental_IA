@@ -341,7 +341,7 @@ extracción de información y recuperación aumentada por generación —RAG).
   2. El sistema genera el embedding de la pregunta.
   3. El sistema busca en MongoDB Atlas Vector Search los fragmentos más similares.
   4. El sistema arma un prompt con el contexto recuperado.
-  5. Gemini responde con base únicamente en ese contexto.
+  5. El modelo de IA responde con base únicamente en ese contexto.
   6. El sistema devuelve la respuesta junto con los documentos/fuentes usados.
 - **Flujos alternativos:**
   - 3a. Sin resultados relevantes → el modelo responde "no encontré información".
@@ -407,7 +407,7 @@ extracción de información y recuperación aumentada por generación —RAG).
 | ID | Riesgo | Probabilidad | Impacto | Mitigación |
 |----|--------|--------------|---------|------------|
 | R01 | Límites de la API de IA (rate limits) durante procesamiento masivo de los 30 documentos de prueba. | Media | Alto | Procesar en lotes pequeños; reintentos con backoff; registrar errores por documento. |
-| R02 | Costos de la API de Gemini (tokens de entrada/salida + embeddings). | Media | Medio | Usar modelo ligero (gemini-3.6-flash), embeddings gemini-embedding-001, chunking para no enviar textos gigantes, límites de tamaño de archivo. |
+| R02 | Costos de la API de IA (OpenRouter/DeepSeek: tokens de entrada/salida + embeddings). | Media | Medio | Usar modelo ligero (deepseek/deepseek-chat), embeddings openai/text-embedding-3-small, chunking para no enviar textos gigantes, límites de tamaño de archivo. |
 | R03 | Tiempo insuficiente para completar todos los entregables de la semana. | Media | Alto | Plan día a día, priorizar flujo de IA real sobre UI, entregables mínimos por día. |
 | R04 | PDF escaneados sin capa de texto no dan resultado de extracción (0 páginas con texto). | Alta | Medio | Documentar como exclusión (no OCR); marcar documento en error con mensaje claro. |
 | R05 | Disponibilidad de MongoDB Atlas (interrupción del proveedor). | Baja | Medio | Atlas tiene alta disponibilidad y respaldo automático; conexión con retry; documentar respaldo (export/restore). |

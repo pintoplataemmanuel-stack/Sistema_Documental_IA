@@ -26,14 +26,15 @@ const STAGES = {
  * @returns {Promise<object>} { status, document }
  */
 async function processDocument(documentId, userId) {
-  const document = await Document.findById(documentId);
-  if (!document) {
-    return { status: "error", error: "Documento no encontrado" };
-  }
-
-  const logId = await createLog(document, userId);
-
+  let logId;
   try {
+    const document = await Document.findById(documentId);
+    if (!document) {
+      return { status: "error", error: "Documento no encontrado" };
+    }
+
+    logId = await createLog(document, userId);
+
     // 1. Extracción de texto
     const rawText = await extractText(document.path, document.fileType);
     if (!rawText || !rawText.trim()) {
@@ -96,11 +97,38 @@ async function processDocument(documentId, userId) {
   } catch (error) {
     console.error(`[processDocument ${documentId}] ERROR:`, error.message);
 
-    document.status = "error";
-    document.processingError = error.message;
-    await document.save();
+    // Crítico: ante cualquier fallo (401/429/500 de la API de IA, timeout,
+    // extracción, etc.) el documento se marca inmediatamente en "error" para
+    // que el usuario pueda reintentarlo. Se usa updateOne (atómico) para no
+    // depender del estado en memoria ni de validaciones del schema.
+    try {
+      await Document.updateOne(
+        { _id: documentId },
+        {
+          $set: {
+            status: "error",
+            processingError: error.message,
+            processedAt: new Date(),
+          },
+        }
+      );
+    } catch (persistError) {
+      // Último recurso: si ni siquiera se pudo persistir el error, la
+      // recuperación de arranque (recoverStaleProcessing) lo marcará luego.
+      console.error(
+        `[processDocument ${documentId}] No se pudo marcar el error en la BD:`,
+        persistError.message
+      );
+    }
 
-    await finalizeLog(logId, "error", error.message);
+    if (logId) {
+      await finalizeLog(logId, "error", error.message).catch((e) =>
+        console.error(
+          `[processDocument ${documentId}] No se pudo cerrar el log:`,
+          e.message
+        )
+      );
+    }
 
     return { status: "error", error: error.message };
   }
