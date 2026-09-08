@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 // URL base de la API en producción. Se inyecta siempre en el bundle,
 // aunque Vercel no tenga la variable configurada.
 const API_BASE =
-  process.env.VITE_API_BASE || 'https://sistema-documental-ia.onrender.com'
+  process.env.VITE_API_BASE || 'https://sistema-documental-ia.onrender.com/api'
 
 export default defineConfig({
   plugins: [react()],

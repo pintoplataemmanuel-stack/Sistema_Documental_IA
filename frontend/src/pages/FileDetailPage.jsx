@@ -85,7 +85,7 @@ export default function FileDetailPage() {
           <button className="btn btn-primary" onClick={handleProcess} disabled={doc.status === 'processing' || processing}>
             {doc.status === 'processing' || processing ? 'Procesando…' : 'Procesar con IA'}
           </button>
-          <a className="btn btn-ghost" href={apiUrl(`/api/files/${docId}/download`)}>
+          <a className="btn btn-ghost" href={apiUrl(`/files/${docId}/download`)}>
             Descargar
           </a>
         </div>
