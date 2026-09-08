@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../api/client';
+import api, { apiUrl } from '../api/client';
 import Alert from '../components/Alert';
 import DocumentStatus from '../components/DocumentStatus';
 
@@ -85,7 +85,7 @@ export default function FileDetailPage() {
           <button className="btn btn-primary" onClick={handleProcess} disabled={doc.status === 'processing' || processing}>
             {doc.status === 'processing' || processing ? 'Procesando…' : 'Procesar con IA'}
           </button>
-          <a className="btn btn-ghost" href={`/api/files/${docId}/download`}>
+          <a className="btn btn-ghost" href={apiUrl(`/api/files/${docId}/download`)}>
             Descargar
           </a>
         </div>

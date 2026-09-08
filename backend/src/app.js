@@ -10,7 +10,34 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
 
-app.use(cors());
+// CORS: permite peticiones desde el frontend desplegado (Vercel) y de desarrollo local.
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  ...(process.env.FRONTEND_URL || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+];
+
+function isAllowedOrigin(origin) {
+  return (
+    allowedOrigins.includes(origin) ||
+    (typeof origin === "string" && /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin))
+  );
+}
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

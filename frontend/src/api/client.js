@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE || '/api').replace(/\/+$/, '');
+
+export function apiUrl(path) {
+  return `${API_BASE}${path}`;
+}
 
 function getToken() {
   return localStorage.getItem('token');
@@ -17,7 +21,7 @@ async function request(path, { method = 'GET', body, formData } = {}) {
     payload = JSON.stringify(body);
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { method, headers, body: payload });
+  const res = await fetch(apiUrl(path), { method, headers, body: payload });
 
   let data = null;
   const text = await res.text();
