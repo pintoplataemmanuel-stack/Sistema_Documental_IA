@@ -34,14 +34,14 @@ códigos fuente.
 
 | # | Entregable | Descripción |
 |---|-----------|-------------|
-| 01 | [Documento de Análisis](<01 – Documento de Análisis/01 – Documento de Análisis.md>) | Contexto, requerimientos, casos de uso |
-| 02 | [Documento de Diseño](<02 – Documento de Diseño/02 – Documento de Diseño.md>) | Arquitectura, modelo de datos, API |
-| 03 | [Documento de Desarrollo](<03 – Documento de Desarrollo – Documento técnico/03 – Documento de Desarrollo.md>) | Estructura del código e integración de IA |
-| 04 | [Plan y evidencias de Pruebas](<04 – Plan y evidencias de Pruebas/04 – Plan y evidencias de Pruebas.md>) | Plan, 10 casos de prueba y resultados |
-| 05 | [Implementación y Despliegue](<05 – Documento de Implementación y Despliegue/05 – Documento de Implementación y Despliegue.md>) | Despliegue en Vercel y Render |
-| 06 | [Manual de Usuario](<06 – Manual de Usuario/06 – Manual de Usuario.md>) | Guía paso a paso del uso de la app |
-| 07 | [Manual Técnico](<07 – Manual Técnico – Administración/07 – Manual Técnico.md>) | Instalación, ejecución y administración |
-| 08 | [Matriz de Trazabilidad](<08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas/08 – Matriz de trazabilidad.md>) | Requisitos ↔ funcionalidades ↔ pruebas |
+| 01 | [Documento de Análisis (PDF)](<01 – Documento de Análisis/Documento 01 — Análisis del Sistema.pdf>) | Contexto, requerimientos, casos de uso |
+| 02 | [Documento de Diseño (PDF)](<02 – Documento de Diseño/Documento 02 — Diseño del Sistema.pdf>) | Arquitectura, modelo de datos, API |
+| 03 | [Documento de Desarrollo (PDF)](<03 – Documento de Desarrollo – Documento técnico/Documento 03 — Documento de Desarrollo _ Documento técnico.pdf>) | Estructura del código e integración de IA |
+| 04 | [Plan y evidencias de Pruebas (PDF)](<04 – Plan y evidencias de Pruebas/Documento 04 — Plan y evidencias de Pruebas.pdf>) | Plan, casos de prueba y resultados |
+| 05 | [Implementación y Despliegue (PDF)](<05 – Documento de Implementación y Despliegue/Documento 05 — Documento de Implementación y Despliegue.pdf>) | Despliegue en Vercel y Render |
+| 06 | [Manual de Usuario (PDF)](<06 – Manual de Usuario/Documento 06 — Manual de Usuario.pdf>) | Guía paso a paso del uso de la app |
+| 07 | [Manual Técnico (PDF)](<07 – Manual Técnico – Administración/Documento 07 — Manual Técnico _ Administración.pdf>) | Instalación, ejecución y administración |
+| 08 | [Matriz de Trazabilidad (imagen)](<08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas/matriz de trazabilidad.jpg>) | Requisitos ↔ funcionalidades ↔ pruebas |
 | 09 | [Código fuente en repositorio Git](<09 – Código fuente en repositorio Git/README.md>) | Backend (`backend/`) y frontend (`frontend/`) |
 | 10 | [Base de datos y scripts](<10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/README.md>) | Acceso a MongoDB Atlas y scripts de reproducción |
 
