@@ -77,7 +77,7 @@ export default function RepositoryDetailPage() {
     <div>
       <div className="page-header">
         <div>
-          <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>
+          <button className="btn btn-ghost btn-sm" onClick={() => navigate('/repos')}>
             ← Volver
           </button>
           <h2>{repo?.name || 'Cargando…'}</h2>
