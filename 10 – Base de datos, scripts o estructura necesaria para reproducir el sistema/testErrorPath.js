@@ -1,9 +1,11 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
-const Document = require("../src/models/Document");
-const aiService = require("../src/services/aiService");
-const processingService = require("../src/services/processingService");
-const { mongodbUri } = require("../src/config/env");
+const path = require("path");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
+const mongoose = require(path.join(B, "node_modules", "mongoose"));
+const Document = require(path.join(B, "src", "models", "Document"));
+const aiService = require(path.join(B, "src", "services", "aiService"));
+const processingService = require(path.join(B, "src", "services", "processingService"));
+const { mongodbUri } = require(path.join(B, "src", "config", "env"));
 
 const DOC_ID = process.argv[2] || "6a979b8884b155839aa066d3";
 

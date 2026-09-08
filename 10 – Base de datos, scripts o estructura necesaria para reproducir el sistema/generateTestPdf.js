@@ -3,7 +3,7 @@
  * externas, calculando offsets correctos para la tabla xref.
  * Utilidad de desarrollo para probar la extracción de texto (pdfjs-dist) localmente.
  *
- * Uso: node scripts/generateTestPdf.js [outputPath]
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/generateTestPdf.js" [outputPath]
  */
 const fs = require("fs");
 const path = require("path");

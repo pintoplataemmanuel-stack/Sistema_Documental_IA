@@ -2,16 +2,18 @@
  * Prueba local del Día 3 (sin red, sin BD):
  * - extractText sobre TXT y PDF (pdfjs-dist)
  * - chunkText con texto largo
- * Uso: node scripts/testDay3.js
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/testDay3.js"
  */
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execFileSync } = require("child_process");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
 
-const { extractText } = require("../src/services/textExtractionService");
-const { chunkText } = require("../src/services/textChunkService");
-const { ai } = require("../src/config/env");
+const { extractText } = require(path.join(B, "src", "services", "textExtractionService"));
+const { chunkText } = require(path.join(B, "src", "services", "textChunkService"));
+const { ai } = require(path.join(B, "src", "config", "env"));
 
 async function main() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "svg-dia3-"));

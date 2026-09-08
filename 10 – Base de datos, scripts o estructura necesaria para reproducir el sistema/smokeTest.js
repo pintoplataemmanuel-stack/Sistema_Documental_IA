@@ -6,7 +6,7 @@
  * 4. POST /:id/process
  * 5. Espera a que se complete y muestra el resultado
  *
- * Uso: node scripts/smokeTest.js <TOKEN> <REPO_ID> <RUTA_TXT>
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/smokeTest.js" <TOKEN> <REPO_ID> <RUTA_TXT>
  */
 const http = require("http");
 const fs = require("fs");

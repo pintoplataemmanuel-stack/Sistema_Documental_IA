@@ -2,16 +2,18 @@
  * Prueba del recovery: simula documentos colgados en "processing" y verifica
  * que runStartupRecovery los marca como error (stale) o los reintenta (reciente).
  *
- * Uso: node scripts/testRecovery.js
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/testRecovery.js"
  */
-require("dotenv").config();
-const mongoose = require("mongoose");
-const { mongodbUri } = require("../src/config/env");
-const Document = require("../src/models/Document");
-const ProcessingLog = require("../src/models/ProcessingLog");
+const path = require("path");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
+const mongoose = require(path.join(B, "node_modules", "mongoose"));
+const { mongodbUri } = require(path.join(B, "src", "config", "env"));
+const Document = require(path.join(B, "src", "models", "Document"));
+const ProcessingLog = require(path.join(B, "src", "models", "ProcessingLog"));
 const {
   recoverStaleProcessing,
-} = require("../src/services/processingService");
+} = require(path.join(B, "src", "services", "processingService"));
 
 const staleMs = 5 * 60 * 1000;
 

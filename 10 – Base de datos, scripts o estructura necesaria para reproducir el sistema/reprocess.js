@@ -1,6 +1,6 @@
 /**
  * Reprocesa un documento por id y sigue su estado hasta completar (poll).
- * Uso: node scripts/reprocess.js <TOKEN> <DOC_ID>
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/reprocess.js" <TOKEN> <DOC_ID>
  */
 const http = require("http");
 const TOKEN = process.argv[2];

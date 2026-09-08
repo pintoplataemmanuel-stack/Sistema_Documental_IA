@@ -4,18 +4,20 @@
  * extracción/embeddings, y ejecuta processDocument contra la BD real.
  *
  * Prerrequisito: backend/.env con MONGODB_URI real.
- * Uso: node scripts/testPipelineMock.js <DOC_ID>
+ * Uso: node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/testPipelineMock.js" <DOC_ID>
  */
-require("dotenv").config();
+const path = require("path");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
 
-const mongoose = require("mongoose");
-const { mongodbUri } = require("../src/config/env");
+const mongoose = require(path.join(B, "node_modules", "mongoose"));
+const { mongodbUri } = require(path.join(B, "src", "config", "env"));
 
-const aiService = require("../src/services/aiService");
-const Document = require("../src/models/Document");
-const ProcessingLog = require("../src/models/ProcessingLog");
-const DocumentChunk = require("../src/models/DocumentChunk");
-const { processDocument } = require("../src/services/processingService");
+const aiService = require(path.join(B, "src", "services", "aiService"));
+const Document = require(path.join(B, "src", "models", "Document"));
+const ProcessingLog = require(path.join(B, "src", "models", "ProcessingLog"));
+const DocumentChunk = require(path.join(B, "src", "models", "DocumentChunk"));
+const { processDocument } = require(path.join(B, "src", "services", "processingService"));
 
 const DOC_ID = process.argv[2];
 if (!DOC_ID) {

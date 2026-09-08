@@ -1,6 +1,8 @@
-require("dotenv").config();
-const aiService = require("../src/services/aiService");
-const { openai } = require("../src/config/env");
+const path = require("path");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
+const aiService = require(path.join(B, "src", "services", "aiService"));
+const { openai } = require(path.join(B, "src", "config", "env"));
 
 function maskKey(k) {
   if (!k) return "(no definida)";

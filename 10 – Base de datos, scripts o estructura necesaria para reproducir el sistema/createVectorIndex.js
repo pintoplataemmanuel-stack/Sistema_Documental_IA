@@ -1,8 +1,10 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
-const DocumentChunk = require("../src/models/DocumentChunk");
-const { mongodbUri } = require("../src/config/env");
-const { ai } = require("../src/config/env");
+const path = require("path");
+const B = path.resolve(__dirname, "..", "backend");
+require(path.join(B, "node_modules", "dotenv")).config({ path: path.join(B, ".env") });
+const mongoose = require(path.join(B, "node_modules", "mongoose"));
+const DocumentChunk = require(path.join(B, "src", "models", "DocumentChunk"));
+const { mongodbUri } = require(path.join(B, "src", "config", "env"));
+const { ai } = require(path.join(B, "src", "config", "env"));
 
 const INDEX = {
   name: ai.vectorSearchIndexName,

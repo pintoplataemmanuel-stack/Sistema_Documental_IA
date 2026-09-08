@@ -22,20 +22,25 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 
 ```
 /backend   -> API REST (Node.js + Express + MongoDB Atlas)
-/frontend  -> Aplicación web (React + Vite) [pendiente de crear en el frontend]
-/docs      -> Documentos del proyecto (Análisis, Diseño, Desarrollo, Pruebas, etc.)
+/frontend  -> Aplicación web (React + Vite)
+/01 … /10  -> Entregables del proyecto (ver "Documentos del proyecto")
 ```
 
 ## Documentos del proyecto
 
-- [01 - Análisis](docs/01-analisis.md)
-- [02 - Diseño](docs/02-diseno.md)
-- 03 - Desarrollo (planificado)
-- 04 - Plan de Pruebas (planificado)
-- 05 - Implementación y Despliegue (planificado)
-- 06 - Manual de Usuario (planificado)
-- 07 - Manual Técnico/Administración (planificado)
-- 08 - Matriz de Trazabilidad (planificado)
+Los entregables del proyecto se organizan en carpetas numeradas en la raíz
+del repositorio:
+
+- `01 – Documento de Análisis` → [Documento de Análisis](<01 – Documento de Análisis/01 – Documento de Análisis.md>)
+- `02 – Documento de Diseño` → [Documento de Diseño](<02 – Documento de Diseño/02 – Documento de Diseño.md>)
+- `03 – Documento de Desarrollo – Documento técnico` → pendiente
+- `04 – Plan y evidencias de Pruebas` → pendiente
+- `05 – Documento de Implementación y Despliegue` → pendiente
+- `06 – Manual de Usuario` → pendiente
+- `07 – Manual Técnico – Administración` → pendiente (resumen en "Cómo correr el proyecto")
+- `08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas` → pendiente
+- `09 – Código fuente en repositorio Git` → `backend/` y `frontend/` en la raíz
+- `10 – Base de datos, scripts o estructura necesaria para reproducir el sistema` → [README](<10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/README.md>)
 
 ## Stack tecnológico
 
@@ -66,7 +71,7 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 
 ### Frontend
 1. `cd frontend` → `npm install`
-2. Configurar `VITE_API_URL` apuntando al backend.
+2. Configurar `VITE_API_BASE` apuntando al backend (o usar el proxy dev de `vite.config.js`).
 3. `npm run dev`
 
 ## Búsqueda semántica y chat RAG (Atlas Vector Search)
@@ -82,9 +87,9 @@ La búsqueda requiere un índice de tipo `vectorSearch` en la colección
 
 ```bash
 # Intenta crearlo automáticamente (soportado en tier free/atlas) y espera a READY
-node backend/scripts/createVectorIndex.js
+node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/createVectorIndex.js"
 # O verifica si ya existe y muestra la definición JSON para crearla en Atlas UI
-node backend/scripts/checkVectorIndex.js
+node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/checkVectorIndex.js"
 ```
 
 Definición equivalente para crear a mano en **Atlas UI** (Atlas Search → Create
