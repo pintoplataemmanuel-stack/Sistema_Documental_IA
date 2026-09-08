@@ -26,6 +26,9 @@ module.exports = {
     chatTextLimit: Number(process.env.AI_CHAT_TEXT_LIMIT) || 6000,
     // Umbral (ms) para considerar "colgado" un documento en processing.
     staleMs: Number(process.env.AI_PROCESS_STALE_MS) || 5 * 60 * 1000,
+    // Nombre del índice de Atlas Vector Search sobre la colección documentchunks.
+    vectorSearchIndexName:
+      process.env.AI_VECTOR_SEARCH_INDEX || "vector_index",
   },
   limits: {
     maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB) || 10,

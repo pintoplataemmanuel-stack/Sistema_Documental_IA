@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import RepositoriesPage from './pages/RepositoriesPage';
 import RepositoryDetailPage from './pages/RepositoryDetailPage';
 import FileDetailPage from './pages/FileDetailPage';
+import SearchPage from './pages/SearchPage';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
 
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route path="/" element={<RepositoriesPage />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/repos/:repoId" element={<RepositoryDetailPage />} />
             <Route path="/repos/:repoId/files/:docId" element={<FileDetailPage />} />
           </Route>

@@ -69,6 +69,53 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 2. Configurar `VITE_API_URL` apuntando al backend.
 3. `npm run dev`
 
+## Búsqueda semántica y chat RAG (Atlas Vector Search)
+
+Día 5: búsqueda por similitud semántica sobre los fragmentos de los
+documentos procesados (`documentchunks`) y chat que responde usando solo ese
+contexto, citando las fuentes.
+
+### Índice de Atlas Vector Search
+
+La búsqueda requiere un índice de tipo `vectorSearch` en la colección
+`documentchunks` (dimensiones 1536, igual que las del modelo de embeddings):
+
+```bash
+# Intenta crearlo automáticamente (soportado en tier free/atlas) y espera a READY
+node backend/scripts/createVectorIndex.js
+# O verifica si ya existe y muestra la definición JSON para crearla en Atlas UI
+node backend/scripts/checkVectorIndex.js
+```
+
+Definición equivalente para crear a mano en **Atlas UI** (Atlas Search → Create
+Search Index → JSON Editor), con nombre `vector_index`:
+
+```json
+{
+  "name": "vector_index",
+  "type": "vectorSearch",
+  "definition": {
+    "fields": [
+      { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
+      { "type": "filter", "path": "owner" },
+      { "type": "filter", "path": "repository" }
+    ]
+  }
+}
+```
+
+Requiere MongoDB 7.0.2+ (default en Atlas). Si el índice no existe, las rutas
+responden `400` indicando que debe crearse; nunca quedan colgadas.
+
+### Endpoints
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | `/api/search/search` | Búsqueda semántica. Body: `{ query, repositoryId?, limit? }` → `{ results: [{ documentId, documentName, content, score, ... }] }` |
+| POST | `/api/search/chat` | Chat RAG. Body: `{ question, repositoryId? }` → `{ answer, sources: [...] }` |
+
+Frontend: página **Buscar IA** (`/search`) con pestañas de chat y de búsqueda.
+
 ## Estado actual
 
 - [x] Estructura del repositorio
@@ -78,7 +125,7 @@ Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
 - [x] Backend: carga, listado, descarga y eliminación de archivos (multer)
 - [ ] Documento 01 - Análisis
 - [ ] Documento 02 - Diseño
-- [ ] Backend: procesamiento con IA (extracción, clasificación, resumen, embeddings, RAG)
-- [ ] Frontend (React + Vite)
+- [x] Backend: procesamiento con IA (extracción, clasificación, resumen, embeddings, RAG)
+- [x] Frontend (React + Vite)
 - [ ] Pruebas y documentos de prueba
 - [ ] Despliegue y video

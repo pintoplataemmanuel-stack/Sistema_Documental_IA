@@ -17,6 +17,12 @@ export default function Layout() {
           📄 Sistema Documental <span className="topbar-brand-ia">IA</span>
         </div>
         <div className="topbar-right">
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => navigate('/search')}
+          >
+            🔍 Buscar IA
+          </button>
           <span className="topbar-user">{user?.name}</span>
           <button className="btn btn-ghost btn-sm" onClick={handleLogout}>
             Salir

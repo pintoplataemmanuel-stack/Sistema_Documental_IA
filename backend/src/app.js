@@ -5,6 +5,7 @@ const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const repositoryRoutes = require("./routes/repositoryRoutes");
 const fileRoutes = require("./routes/fileRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -28,6 +29,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/repos", repositoryRoutes);
 app.use("/api/files", fileRoutes);
+app.use("/api/search", searchRoutes);
 
 // Manejo de errores
 app.use(notFound);

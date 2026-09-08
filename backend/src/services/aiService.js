@@ -173,6 +173,25 @@ async function generateEmbeddings(input) {
   return isSingle ? vectors[0] : vectors;
 }
 
+/**
+ * Responde una pregunta (chat RAG) usando el contexto de fragmentos ya
+ * recuperados de los documentos, citando las fuentes empleadas.
+ * @returns {Promise<{respuesta: string, fuentes: number[]}>}
+ */
+async function askQuestion(question, context) {
+  const result = await chatJson({
+    system:
+      'Eres un asistente de un sistema de gestión documental. Responde a la pregunta usando SOLO el contexto de los documentos entregados. Cada fuente está numerada como [n]. Responde en español, en prosa natural, y añade al final de cada idea las fuentes relevantes como [n]. Si el contexto no contiene la respuesta, dilo explícitamente. Responde únicamente en JSON: {"respuesta":"<texto>","fuentes":[1,2]}',
+    user: `Contexto:\n${context}\n\nPregunta: ${question}`,
+  });
+  return {
+    respuesta: (result && result.respuesta) || "",
+    fuentes: Array.isArray(result && result.fuentes)
+      ? result.fuentes.map(Number).filter(Number.isFinite)
+      : [],
+  };
+}
+
 module.exports = {
   CATEGORIES,
   KEY_FIELDS,
@@ -180,4 +199,5 @@ module.exports = {
   summarizeDocument,
   extractKeyInfo,
   generateEmbeddings,
+  askQuestion,
 };

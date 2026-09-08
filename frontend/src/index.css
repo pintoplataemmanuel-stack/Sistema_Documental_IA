@@ -184,3 +184,67 @@ a { color: var(--primary); }
   max-height: 320px;
   overflow: auto;
 }
+
+/* Búsqueda IA (Día 5) */
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.tab {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.tab-active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.chat-form { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.chat-form .field-input { flex: 1 1 280px; }
+.chat-history { display: flex; flex-direction: column; gap: 0.9rem; margin-top: 1.1rem; }
+.chat-msg {
+  max-width: 88%;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.chat-msg-user { align-self: flex-end; background: var(--primary); color: #fff; }
+.chat-msg-bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
+.chat-sources { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.55rem; }
+.src-chip {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: var(--primary-dark);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.src-chip:hover { border-color: var(--primary); }
+.src-score { opacity: 0.75; }
+.search-results { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+.result-item { cursor: pointer; text-align: left; width: 100%; }
+.result-item:hover { border-color: var(--primary); }
+.result-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.result-title { font-weight: 700; }
+.score {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: var(--primary-dark);
+  white-space: nowrap;
+}
+.result-snippet {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
