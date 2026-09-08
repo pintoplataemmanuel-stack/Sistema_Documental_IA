@@ -1,136 +1,69 @@
-# Sistema Inteligente de Gestión y Análisis Documental
+# Sistema Inteligente de Gestión y Análisis Documental con IA
 
 ## Descripción
 
-Sistema web que permite gestionar archivos de una empresa (repositorios y documentos),
-y analizarlos con inteligencia artificial: **clasificación automática**, **resúmenes**,
-**extracción de datos clave**, **búsqueda semántica** y **preguntas en lenguaje natural**
-sobre los documentos (RAG).
+Aplicación web empresarial que permite gestionar un repositorio de documentos
+y aplicar **Inteligencia Artificial (RAG)** para **clasificar**, **resumir**,
+**extraer información** y **consultar el contenido** de los archivos.
+Carga documentos (PDF, DOCX, TXT), los organiza en repositorios y luego
+puedes buscar y preguntar en lenguaje natural sobre todo lo que contienen.
 
-## Contexto del proyecto
+## Aplicación en línea
 
-Proyecto académico tipo Full Stack cuyo alcance funcional mínimo cubre:
+🌐 **Aplicación en línea:** https://sistema-documental-ia.vercel.app
 
-- Autenticación (registro e inicio de sesión con JWT).
-- Carga y gestión de documentos (PDF, DOCX, TXT) en repositorios.
-- Procesamiento con IA: clasificación, resumen y extracción de información.
-- Búsqueda por palabras clave y por similitud semántica.
-- Consultas en lenguaje natural sobre los documentos.
-- Panel de control (dashboard) con indicadores.
+El docente o cualquier usuario puede probar la aplicación desde su computador
+ingresando a esta URL (crea una cuenta gratuita con un correo y contraseña de
+mínimo 8 caracteres).
+
+## Tecnologías utilizadas
+
+- **React (Vite)** — Frontend (SPA)
+- **Node.js (Express)** — Backend (API REST)
+- **MongoDB Atlas** — Base de datos (+ Atlas Vector Search para búsqueda semántica)
+- **OpenAI/OpenRouter** — IA: clasificación, resumen, extracción, embeddings y RAG
+- **JWT** — Autenticación y control de acceso
+- **Vercel** — Hosting del frontend
+- **Render** — Hosting del backend
 
 ## Estructura del repositorio
 
-```
-/backend   -> API REST (Node.js + Express + MongoDB Atlas)
-/frontend  -> Aplicación web (React + Vite)
-/01 … /10  -> Entregables del proyecto (ver "Documentos del proyecto")
-```
+El repositorio está organizado en los **entregables del 01 al 10**: Análisis,
+Diseño, Desarrollo, Pruebas, Implementación/Despliegue, Manuales y los
+códigos fuente.
 
-## Documentos del proyecto
+| # | Entregable | Descripción |
+|---|-----------|-------------|
+| 01 | [Documento de Análisis](<01 – Documento de Análisis/01 – Documento de Análisis.md>) | Contexto, requerimientos, casos de uso |
+| 02 | [Documento de Diseño](<02 – Documento de Diseño/02 – Documento de Diseño.md>) | Arquitectura, modelo de datos, API |
+| 03 | [Documento de Desarrollo](<03 – Documento de Desarrollo – Documento técnico/03 – Documento de Desarrollo.md>) | Estructura del código e integración de IA |
+| 04 | [Plan y evidencias de Pruebas](<04 – Plan y evidencias de Pruebas/04 – Plan y evidencias de Pruebas.md>) | Plan, 10 casos de prueba y resultados |
+| 05 | [Implementación y Despliegue](<05 – Documento de Implementación y Despliegue/05 – Documento de Implementación y Despliegue.md>) | Despliegue en Vercel y Render |
+| 06 | [Manual de Usuario](<06 – Manual de Usuario/06 – Manual de Usuario.md>) | Guía paso a paso del uso de la app |
+| 07 | [Manual Técnico](<07 – Manual Técnico – Administración/07 – Manual Técnico.md>) | Instalación, ejecución y administración |
+| 08 | [Matriz de Trazabilidad](<08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas/08 – Matriz de trazabilidad.md>) | Requisitos ↔ funcionalidades ↔ pruebas |
+| 09 | [Código fuente en repositorio Git](<09 – Código fuente en repositorio Git/README.md>) | Backend (`backend/`) y frontend (`frontend/`) |
+| 10 | [Base de datos y scripts](<10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/README.md>) | Acceso a MongoDB Atlas y scripts de reproducción |
 
-Los entregables del proyecto se organizan en carpetas numeradas en la raíz
-del repositorio:
-
-- `01 – Documento de Análisis` → [Documento de Análisis](<01 – Documento de Análisis/01 – Documento de Análisis.md>)
-- `02 – Documento de Diseño` → [Documento de Diseño](<02 – Documento de Diseño/02 – Documento de Diseño.md>)
-- `03 – Documento de Desarrollo – Documento técnico` → pendiente
-- `04 – Plan y evidencias de Pruebas` → pendiente
-- `05 – Documento de Implementación y Despliegue` → pendiente
-- `06 – Manual de Usuario` → pendiente
-- `07 – Manual Técnico – Administración` → pendiente (resumen en "Cómo correr el proyecto")
-- `08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas` → pendiente
-- `09 – Código fuente en repositorio Git` → `backend/` y `frontend/` en la raíz
-- `10 – Base de datos, scripts o estructura necesaria para reproducir el sistema` → [README](<10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/README.md>)
-
-## Stack tecnológico
-
-| Capa | Tecnología |
-|------|-----------|
-| Frontend | React + Vite, Tailwind CSS, React Router |
-| Backend | Node.js + Express |
-| Base de datos | MongoDB Atlas (datos + vectores) |
-| Autenticación | JWT + bcrypt |
-| IA | OpenRouter vía API compatible con OpenAI (clasificación, resumen, extracción, embeddings) |
-| Búsqueda | Búsqueda de texto + MongoDB Atlas Vector Search |
-| Control de versiones | Git + GitHub |
-
-## Cómo correr el proyecto
-
-> Detalle completo en el Manual Técnico (07). Resumen rápido:
-
-### Requisitos previos
-- Node.js 18+ y npm
-- Cuenta de MongoDB Atlas con un cluster
-- API key de OpenRouter (o de un proveedor compatible con la API de OpenAI)
+## Cómo correr el proyecto localmente
 
 ### Backend
-1. `cd backend`
-2. `npm install`
-3. Copiar `.env.example` a `.env` y completar las variables.
-4. `npm run dev`
-
-### Frontend
-1. `cd frontend` → `npm install`
-2. Configurar `VITE_API_BASE` apuntando al backend (o usar el proxy dev de `vite.config.js`).
-3. `npm run dev`
-
-## Búsqueda semántica y chat RAG (Atlas Vector Search)
-
-Día 5: búsqueda por similitud semántica sobre los fragmentos de los
-documentos procesados (`documentchunks`) y chat que responde usando solo ese
-contexto, citando las fuentes.
-
-### Índice de Atlas Vector Search
-
-La búsqueda requiere un índice de tipo `vectorSearch` en la colección
-`documentchunks` (dimensiones 1536, igual que las del modelo de embeddings):
 
 ```bash
-# Intenta crearlo automáticamente (soportado en tier free/atlas) y espera a READY
-node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/createVectorIndex.js"
-# O verifica si ya existe y muestra la definición JSON para crearla en Atlas UI
-node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/checkVectorIndex.js"
+cd backend
+npm install
+cp .env.example .env   # completar MONGODB_URI, JWT_SECRET y OPENAI_API_KEY
+npm run dev            # API en http://localhost:5000
 ```
 
-Definición equivalente para crear a mano en **Atlas UI** (Atlas Search → Create
-Search Index → JSON Editor), con nombre `vector_index`:
+### Frontend
 
-```json
-{
-  "name": "vector_index",
-  "type": "vectorSearch",
-  "definition": {
-    "fields": [
-      { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
-      { "type": "filter", "path": "owner" },
-      { "type": "filter", "path": "repository" }
-    ]
-  }
-}
+```bash
+cd frontend
+npm install
+npm run dev            # app en http://localhost:5173
 ```
 
-Requiere MongoDB 7.0.2+ (default en Atlas). Si el índice no existe, las rutas
-responden `400` indicando que debe crearse; nunca quedan colgadas.
+## Autor
 
-### Endpoints
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | `/api/search/search` | Búsqueda semántica. Body: `{ query, repositoryId?, limit? }` → `{ results: [{ documentId, documentName, content, score, ... }] }` |
-| POST | `/api/search/chat` | Chat RAG. Body: `{ question, repositoryId? }` → `{ answer, sources: [...] }` |
-
-Frontend: página **Buscar IA** (`/search`) con pestañas de chat y de búsqueda.
-
-## Estado actual
-
-- [x] Estructura del repositorio
-- [x] Backend: modelos (User, Repository, Document, ProcessingLog)
-- [x] Backend: autenticación (register/login/profile) con JWT y bcrypt
-- [x] Backend: CRUD de repositorios
-- [x] Backend: carga, listado, descarga y eliminación de archivos (multer)
-- [ ] Documento 01 - Análisis
-- [ ] Documento 02 - Diseño
-- [x] Backend: procesamiento con IA (extracción, clasificación, resumen, embeddings, RAG)
-- [x] Frontend (React + Vite)
-- [ ] Pruebas y documentos de prueba
-- [ ] Despliegue y video
+**Emmanuel Pinto Plata** — Desarrollo Full Stack (MERN) con integración de IA.
