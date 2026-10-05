@@ -4,6 +4,7 @@ const DocumentChunk = require("../models/DocumentChunk");
 const { extractText } = require("./textExtractionService");
 const { chunkText } = require("./textChunkService");
 const aiService = require("./aiService");
+const { notifyDocumentProcessed } = require("./webhookService");
 const { ai: aiConfig } = require("../config/env");
 
 const STAGES = {
@@ -93,6 +94,8 @@ async function processDocument(documentId, userId) {
 
     await finalizeLog(logId, "completed", "Procesamiento completado");
 
+    notifyDocumentProcessed(document._id.toString());
+
     return { status: "completed", document };
   } catch (error) {
     console.error(`[processDocument ${documentId}] ERROR:`, error.message);
@@ -129,6 +132,8 @@ async function processDocument(documentId, userId) {
         )
       );
     }
+
+    notifyDocumentProcessed(documentId);
 
     return { status: "error", error: error.message };
   }
@@ -238,6 +243,7 @@ async function recoverStaleProcessing() {
         }
       );
       markedError += 1;
+      notifyDocumentProcessed(doc._id.toString());
     } else {
       // Reciente: reintentar una vez (la tarea quedó huérfana por el reinicio).
       retried += 1;

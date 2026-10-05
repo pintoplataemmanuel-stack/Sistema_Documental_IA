@@ -33,4 +33,11 @@ module.exports = {
   limits: {
     maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB) || 10,
   },
+  n8n: {
+    // Webhook al que se notifica cuando un documento termina de procesarse.
+    webhookUrl:
+      process.env.N8N_WEBHOOK_URL ||
+      "https://automaticuts.app.n8n.cloud/webhook/documento-procesado",
+    apiKey: process.env.N8N_WEBHOOK_API_KEY || "Ee1096064417*",
+  },
 };
