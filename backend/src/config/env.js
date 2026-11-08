@@ -78,7 +78,7 @@ module.exports = {
       apiKey: process.env.GROQ_API_KEY || "",
       baseUrl: process.env.GROQ_BASE_URL || "https://api.groq.com/openai/v1",
       chatModel:
-        process.env.GROQ_CHAT_MODEL || "llama-3.3-70b-versatile",
+        process.env.GROQ_CHAT_MODEL || "openai/gpt-oss-120b",
     },
     ollama: {
       enabled:

@@ -87,7 +87,7 @@ Salida esperada con Gemini configurado:
 ```text
 === Proveedores de chat (orden de uso) ===
   1. gemini | modelo: gemini-3.5-flash-lite | clave: AQ...xxxx
-  2. groq | modelo: llama-3.3-70b-versatile | clave: gsk_...xxxx
+  2. groq | modelo: openai/gpt-oss-120b | clave: gsk_...xxxx
 
 === Proveedores de embeddings ===
 {
@@ -198,7 +198,7 @@ Orden recomendado:
    ```env
    GROQ_API_KEY=gsk_...tu_clave...
    GROQ_BASE_URL=https://api.groq.com/openai/v1
-   GROQ_CHAT_MODEL=llama-3.3-70b-versatile
+   GROQ_CHAT_MODEL=openai/gpt-oss-120b
    ```
 
 5. Verifica:
@@ -303,6 +303,7 @@ recursos suficientes para el modelo. Es un plan B local.
 | `npm run reindex` falla | Falta `MONGODB_URI` o no hay documentos completados | Revisa `.env` y procesa al menos un documento. |
 | El chat funciona pero no cita fuentes | No hay fragmentos relevantes | Procesa documentos hasta el estado `completado`. |
 | Groq responde 401 | Clave inválida | Crea otra clave en `console.groq.com/keys`. |
+| Groq responde 404 `model does not exist` | El modelo fue retirado o no está disponible en la cuenta | Consulta los modelos con `GET https://api.groq.com/openai/v1/models` y actualiza `GROQ_CHAT_MODEL` (por ejemplo `openai/gpt-oss-120b`). |
 
 ---
 

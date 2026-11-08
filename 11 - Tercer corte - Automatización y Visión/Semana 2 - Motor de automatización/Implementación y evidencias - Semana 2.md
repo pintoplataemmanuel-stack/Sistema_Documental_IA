@@ -176,7 +176,7 @@ Cada flujo declara:
 Con `AI_PROVIDER=auto` el orden es:
 
 1. **Gemini** (`gemini-3.5-flash-lite` por defecto).
-2. **Groq** (`llama-3.3-70b-versatile`).
+2. **Groq** (`openai/gpt-oss-120b`).
 3. **OpenRouter/OpenAI** (compatibilidad con el proveedor anterior).
 4. **Ollama** local (solo si `OLLAMA_ENABLED=true`).
 
@@ -196,7 +196,7 @@ prueba automáticamente el siguiente proveedor configurado.
 |---|---|---|
 | Gemini | `gemini-3.5-flash-lite` | Chat, clasificación, resumen, extracción y visión (Semana 3). |
 | Gemini | `gemini-embedding-001` (768 dimensiones) | Embeddings para RAG. |
-| Groq | `llama-3.3-70b-versatile` | Respaldo de chat. |
+| Groq | `openai/gpt-oss-120b` | Respaldo de chat. |
 | OpenRouter | `deepseek/deepseek-chat` | Compatibilidad con el proveedor anterior. |
 | Ollama | `llama3.2` / `nomic-embed-text` | Plan B local, sin cuotas. |
 
