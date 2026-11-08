@@ -70,8 +70,9 @@ export default function FileDetailPage() {
           <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/repos/${repoId}`)}>
             ← Volver
           </button>
-          <h2>{doc.originalName}</h2>
-          <p className="muted">
+          <span className="page-eyebrow">Documento</span>
+          <h2 className="page-title">{doc.originalName}</h2>
+          <p className="muted sec-sub">
             {doc.fileType?.toUpperCase()} · {(doc.size / 1024).toFixed(1)} KB
           </p>
         </div>

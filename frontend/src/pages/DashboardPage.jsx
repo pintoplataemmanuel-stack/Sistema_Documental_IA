@@ -63,9 +63,15 @@ export default function DashboardPage() {
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Resumen general</span>
           <h2 className="page-title">Dashboard</h2>
-          <p className="muted sec-sub">Hola {firstName}, aquí está tu panorama documental.</p>
+          <p className="muted sec-sub">
+            Hola {firstName}, este es el estado de tu archivo documental.
+          </p>
         </div>
+        <span className="page-meta">
+          {files.length} documento{files.length === 1 ? '' : 's'} en total
+        </span>
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}

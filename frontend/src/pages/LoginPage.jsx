@@ -26,7 +26,7 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthLayout title="Iniciar sesión" subtitle="Sistema Documental con IA">
+    <AuthLayout title="Iniciar sesión" subtitle="Accede a tu espacio de trabajo.">
       <form onSubmit={handleSubmit} className="auth-form">
         <Alert>{error}</Alert>
         <Field label="Correo" type="email" value={email} onChange={setEmail} placeholder="tu@correo.com" required />

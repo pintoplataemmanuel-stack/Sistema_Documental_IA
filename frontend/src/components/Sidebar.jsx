@@ -35,6 +35,9 @@ export default function Sidebar({ onOpenHelp }) {
     .map((w) => w[0]?.toUpperCase())
     .join('');
 
+  const roleLabel =
+    user?.role === 'admin' ? 'Administrador' : user?.role || 'Usuario';
+
   return (
     <aside className="sidebar">
       <div className="sidebar-inner">
@@ -44,11 +47,11 @@ export default function Sidebar({ onOpenHelp }) {
           </span>
           <span className="sb-brand-text">
             Sistema Documental
-            <small>IA Suite</small>
+            <small>Gestión con IA</small>
           </span>
         </div>
 
-        <div className="sb-section-label">Menú</div>
+        <div className="sb-section-label">Espacio de trabajo</div>
         <nav className="sb-nav">
           {NAV.map(({ to, label, icon: Icon, end }) => (
             <NavLink
@@ -77,9 +80,14 @@ export default function Sidebar({ onOpenHelp }) {
             <span className="sb-avatar">{initials}</span>
             <span className="sb-user-text">
               <span className="sb-user-name">{user?.name || 'Usuario'}</span>
-              <span className="sb-user-role">{user?.role || user?.email || ''}</span>
+              <span className="sb-user-role">{roleLabel}</span>
             </span>
-            <button className="sb-logout" onClick={handleLogout} title="Cerrar sesión">
+            <button
+              className="sb-logout"
+              onClick={handleLogout}
+              title="Cerrar sesión"
+              aria-label="Cerrar sesión"
+            >
               <LogoutIcon size={18} />
             </button>
           </div>

@@ -40,7 +40,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthLayout title="Crear cuenta" subtitle="Regístrate para comenzar">
+    <AuthLayout title="Crear cuenta" subtitle="Configura tu espacio de trabajo en un minuto.">
       <form onSubmit={handleSubmit} className="auth-form">
         <Alert>{error || passError}</Alert>
         <Field label="Nombre" value={form.name} onChange={setField('name')} placeholder="Tu nombre" required />

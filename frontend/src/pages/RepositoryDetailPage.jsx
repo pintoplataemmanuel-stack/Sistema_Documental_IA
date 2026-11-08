@@ -80,8 +80,9 @@ export default function RepositoryDetailPage() {
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/repos')}>
             ← Volver
           </button>
-          <h2>{repo?.name || 'Cargando…'}</h2>
-          {repo?.description && <p className="muted">{repo.description}</p>}
+          <span className="page-eyebrow">Repositorio</span>
+          <h2 className="page-title">{repo?.name || 'Cargando…'}</h2>
+          {repo?.description && <p className="muted sec-sub">{repo.description}</p>}
         </div>
       </div>
 
@@ -102,40 +103,42 @@ export default function RepositoryDetailPage() {
           <p>Este repositorio no tiene documentos. Sube el primero.</p>
         </div>
       ) : (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Documento</th>
-                <th>Tipo</th>
-                <th>Tamaño</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {docs.map((doc) => (
-                <tr key={doc._id}>
-                  <td>
-                    <button className="link" onClick={() => navigate(`/repos/${repoId}/files/${doc._id}`)}>
-                      {doc.originalName}
-                    </button>
-                  </td>
-                  <td>{doc.fileType?.toUpperCase()}</td>
-                  <td>{(doc.size / 1024).toFixed(1)} KB</td>
-                  <td><DocumentStatus status={doc.status} /></td>
-                  <td>
-                    <button className="btn btn-sm" onClick={() => handleProcess(doc._id)} disabled={doc.status === 'processing'}>
-                      Procesar
-                    </button>{' '}
-                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(doc)}>
-                      Eliminar
-                    </button>
-                  </td>
+        <div className="card table-card">
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Documento</th>
+                  <th>Tipo</th>
+                  <th>Tamaño</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {docs.map((doc) => (
+                  <tr key={doc._id}>
+                    <td>
+                      <button className="link" onClick={() => navigate(`/repos/${repoId}/files/${doc._id}`)}>
+                        {doc.originalName}
+                      </button>
+                    </td>
+                    <td>{doc.fileType?.toUpperCase()}</td>
+                    <td>{(doc.size / 1024).toFixed(1)} KB</td>
+                    <td><DocumentStatus status={doc.status} /></td>
+                    <td>
+                      <button className="btn btn-sm" onClick={() => handleProcess(doc._id)} disabled={doc.status === 'processing'}>
+                        Procesar
+                      </button>{' '}
+                      <button className="btn btn-sm btn-danger" onClick={() => handleDelete(doc)}>
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

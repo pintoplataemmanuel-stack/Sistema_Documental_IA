@@ -146,6 +146,7 @@ export default function AutomationPage() {
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Motor de flujos</span>
           <h2 className="page-title">Automatizaciones</h2>
           <p className="muted sec-sub">
             Motor propio que reemplaza los flujos de n8n. {flows.length} flujo(s)
@@ -335,7 +336,7 @@ export default function AutomationPage() {
 function RunRow({ run, expanded, detail, detailError, onToggle }) {
   return (
     <>
-      <tr style={{ cursor: 'pointer' }} onClick={onToggle}>
+      <tr className="run-row" onClick={onToggle}>
         <td>
           <div className="sw-name">{run.flowName || run.flowKey}</div>
           <div className="sw-sub">{run.event}</div>
@@ -365,7 +366,7 @@ function RunRow({ run, expanded, detail, detailError, onToggle }) {
 
       {expanded && (
         <tr>
-          <td colSpan={7} style={{ background: '#fafbfd' }}>
+          <td colSpan={7} className="run-detail-cell">
             {detailError ? (
               <Alert>{detailError}</Alert>
             ) : !detail ? (

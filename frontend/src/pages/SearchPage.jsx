@@ -57,9 +57,11 @@ export default function SearchPage() {
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Inteligencia artificial</span>
           <h2 className="page-title">Búsqueda inteligente</h2>
           <p className="muted sec-sub">Semántica sobre tus documentos, con IA.</p>
         </div>
+        <span className="page-meta">Búsqueda semántica y generativa</span>
       </div>
 
       <div className="field repo-filter">

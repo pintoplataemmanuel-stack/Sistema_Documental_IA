@@ -73,13 +73,21 @@ export default function NotificationsPage() {
     }
   }
 
+  function handleOpen(item) {
+    if (!item.read) markOne(item._id);
+    openResource(item);
+  }
+
   return (
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Bandeja de entrada</span>
           <h2 className="page-title">Notificaciones</h2>
           <p className="muted sec-sub">
-            Resultados del motor de automatización. {unread} sin leer.
+            Resultados del motor de automatización.{' '}
+            {unread > 0 && <span className="unread-badge">{unread}</span>}{' '}
+            sin leer.
           </p>
         </div>
         {unread > 0 && (
@@ -106,11 +114,15 @@ export default function NotificationsPage() {
           {items.map((item) => (
             <div
               key={item._id}
-              className="sw-row"
-              style={{ opacity: item.read ? 0.65 : 1, cursor: 'pointer' }}
-              onClick={() => {
-                if (!item.read) markOne(item._id);
-                openResource(item);
+              className={`sw-row notification-row${item.read ? ' is-read' : ''}`}
+              role="button"
+              tabIndex={0}
+              onClick={() => handleOpen(item)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  handleOpen(item);
+                }
               }}
             >
               <span className={`sw-file ${TYPE_CLASS[item.type] || 'tint-blue'}`}>

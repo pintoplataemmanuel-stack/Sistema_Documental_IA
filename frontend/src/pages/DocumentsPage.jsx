@@ -60,11 +60,15 @@ export default function DocumentsPage() {
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Archivo</span>
           <h2 className="page-title">Documentos</h2>
           <p className="muted sec-sub">
-            Todos tus archivos ({docs.length}) organizados y procesados con IA.
+            Todos tus archivos organizados y procesados con IA.
           </p>
         </div>
+        <span className="page-meta">
+          {filtered.length} de {docs.length} documento{docs.length === 1 ? '' : 's'}
+        </span>
       </div>
 
       <Alert>{error}</Alert>

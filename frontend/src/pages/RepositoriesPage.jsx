@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import Alert from '../components/Alert';
-import { useAuth } from '../context/AuthContext';
 import { FolderIcon, FilesIcon, PlusIcon, ChevronRightIcon } from '../components/Icons';
 
-const GRADIENTS = [
-  'linear-gradient(135deg, #6366f1, #8b5cf6)',
-  'linear-gradient(135deg, #2563eb, #06b6d4)',
-  'linear-gradient(135deg, #7c3aed, #db2777)',
-  'linear-gradient(135deg, #059669, #84cc16)',
-  'linear-gradient(135deg, #d97706, #f59e0b)',
-  'linear-gradient(135deg, #dc2626, #fb7185)',
+const TONES = [
+  '#3a4652',
+  '#3f5148',
+  '#55483f',
+  '#4a4658',
+  '#45505a',
+  '#52444a',
 ];
 
 function hashString(str) {
@@ -21,7 +20,6 @@ function hashString(str) {
 }
 
 export default function RepositoriesPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [repos, setRepos] = useState([]);
   const [files, setFiles] = useState([]);
@@ -89,6 +87,7 @@ export default function RepositoriesPage() {
     <div>
       <div className="page-header">
         <div>
+          <span className="page-eyebrow">Biblioteca</span>
           <h2 className="page-title">Repositorios</h2>
           <p className="muted sec-sub">Organiza tus documentos en carpetas y procesos.</p>
         </div>
@@ -141,11 +140,11 @@ export default function RepositoriesPage() {
         <div className="repo-grid">
           {repos.map((repo) => {
             const stats = repoStats(repo._id);
-            const gradient = GRADIENTS[hashString(repo.name) % GRADIENTS.length];
+            const tone = TONES[hashString(repo.name) % TONES.length];
             return (
               <button key={repo._id} className="repo-card" onClick={() => navigate(`/repos/${repo._id}`)}>
                 <div className="repo-top">
-                  <span className="repo-avatar" style={{ background: gradient }}>
+                  <span className="repo-avatar" style={{ background: tone }}>
                     {initials(repo.name)}
                   </span>
                   <ChevronRightIcon size={18} className="repo-go" />
