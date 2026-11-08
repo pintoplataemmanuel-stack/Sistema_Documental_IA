@@ -92,6 +92,8 @@ button { font-family: inherit; }
   border: 1px solid transparent;
 }
 .alert-error { background: var(--danger-soft); color: var(--danger); border-color: #fecaca; }
+.alert-success { background: var(--success-soft); color: var(--success); border-color: #a7f3d0; }
+.alert-info { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
 
 /* Autenticación */
 .auth-layout {

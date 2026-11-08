@@ -21,7 +21,9 @@ mínimo 8 caracteres).
 - **React (Vite)** — Frontend (SPA)
 - **Node.js (Express)** — Backend (API REST)
 - **MongoDB Atlas** — Base de datos (+ Atlas Vector Search para búsqueda semántica)
-- **OpenAI/OpenRouter** — IA: clasificación, resumen, extracción, embeddings y RAG
+- **Gemini free + Groq free** — IA: clasificación, resumen, extracción, embeddings y RAG, con respaldo automático
+- **LangChain (JS)** — Cadenas de IA, prompts y fallback entre proveedores
+- **Motor de automatización propio** — Flujos en código con reintentos, logs y auditoría (sin n8n en la nube)
 - **JWT** — Autenticación y control de acceso
 - **Vercel** — Hosting del frontend
 - **Render** — Hosting del backend
@@ -44,6 +46,7 @@ códigos fuente.
 | 08 | [Matriz de Trazabilidad (imagen)](<08 – Matriz de trazabilidad de requisitos, funcionalidades y pruebas/matriz de trazabilidad.jpg>) | Requisitos ↔ funcionalidades ↔ pruebas |
 | 09 | [Código fuente en repositorio Git](<09 – Código fuente en repositorio Git/README.md>) | Backend (`backend/`) y frontend (`frontend/`) |
 | 10 | [Base de datos y scripts](<10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/README.md>) | Acceso a MongoDB Atlas y scripts de reproducción |
+| 11 | [Tercer corte — Automatización y Visión](<11 - Tercer corte - Automatización y Visión/README.md>) | Inventario n8n, motor propio, chatbot gratuito y módulo de visión |
 
 ## Cómo correr el proyecto localmente
 
@@ -52,8 +55,27 @@ códigos fuente.
 ```bash
 cd backend
 npm install
-cp .env.example .env   # completar MONGODB_URI, JWT_SECRET y OPENAI_API_KEY
+cp .env.example .env   # completar MONGODB_URI, JWT_SECRET y GEMINI_API_KEY
 npm run dev            # API en http://localhost:5000
+```
+
+Verifica qué proveedores de IA quedaron configurados (sin mostrar claves):
+
+```bash
+npm run ai:check
+```
+
+Prueba real de chat y embeddings contra el proveedor configurado:
+
+```bash
+npm run ai:test
+```
+
+Si cambias de proveedor de embeddings (por ejemplo de OpenRouter 1536 a Gemini
+768), regenera los vectores y recrea el índice de Atlas con la nueva dimensión:
+
+```bash
+npm run reindex
 ```
 
 ### Frontend

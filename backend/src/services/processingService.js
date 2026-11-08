@@ -4,7 +4,7 @@ const DocumentChunk = require("../models/DocumentChunk");
 const { extractText } = require("./textExtractionService");
 const { chunkText } = require("./textChunkService");
 const aiService = require("./aiService");
-const { notifyDocumentProcessed } = require("./webhookService");
+const { engine } = require("../automation");
 const { ai: aiConfig } = require("../config/env");
 
 const STAGES = {
@@ -47,20 +47,25 @@ async function processDocument(documentId, userId) {
     await document.save();
     await updateLog(logId, STAGES.extraction, `Texto extraído (${rawText.length} caracteres)`);
 
+    const aiMeta = {
+      userId: userId || document.owner,
+      documentId: document._id,
+    };
+
     // 2. Clasificación
-    const category = await aiService.classifyDocument(rawText);
+    const category = await aiService.classifyDocument(rawText, aiMeta);
     document.category = category;
     await document.save();
     await updateLog(logId, STAGES.classification, `Categoría: ${category}`);
 
     // 3. Resumen
-    const summary = await aiService.summarizeDocument(rawText);
+    const summary = await aiService.summarizeDocument(rawText, aiMeta);
     document.summary = summary;
     await document.save();
     await updateLog(logId, STAGES.summarization, "Resumen generado");
 
     // 4. Extracción de campos clave
-    const keyInfo = await aiService.extractKeyInfo(rawText, category);
+    const keyInfo = await aiService.extractKeyInfo(rawText, category, aiMeta);
     document.extractedInfo = keyInfo && typeof keyInfo === "object" ? keyInfo : {};
     await document.save();
     await updateLog(logId, STAGES.keyInfo, "Campos clave extraídos");
@@ -94,7 +99,18 @@ async function processDocument(documentId, userId) {
 
     await finalizeLog(logId, "completed", "Procesamiento completado");
 
-    notifyDocumentProcessed(document._id.toString());
+    // La automatización corre en el motor propio (sin n8n). Si falla, el
+    // documento sigue completado: la notificación se reintenta y queda auditada.
+    await emitAutomation("document.processed", {
+      documentId: document._id.toString(),
+      userId: document.owner.toString(),
+      fileName: document.originalName,
+      status: "completed",
+      category: document.category,
+      summary: document.summary,
+      processedAt: document.processedAt.toISOString(),
+      idempotencyKey: `document.processed:${document._id}:${document.processedAt.getTime()}`,
+    });
 
     return { status: "completed", document };
   } catch (error) {
@@ -133,7 +149,15 @@ async function processDocument(documentId, userId) {
       );
     }
 
-    notifyDocumentProcessed(documentId);
+    await emitAutomation("document.processing_failed", {
+      documentId,
+      userId,
+      fileName: undefined,
+      status: "error",
+      errorMessage: error.message,
+      processedAt: new Date().toISOString(),
+      idempotencyKey: `document.processing_failed:${documentId}:${Date.now()}`,
+    });
 
     return { status: "error", error: error.message };
   }
@@ -210,7 +234,7 @@ async function getActiveLogAgeMs(documentId) {
 async function recoverStaleProcessing() {
   const staleMs = aiConfig.staleMs;
   const stuck = await Document.find({ status: "processing" })
-    .select("_id owner")
+    .select("_id owner originalName")
     .lean()
     .exec();
 
@@ -243,7 +267,16 @@ async function recoverStaleProcessing() {
         }
       );
       markedError += 1;
-      notifyDocumentProcessed(doc._id.toString());
+      await emitAutomation("document.processing_failed", {
+        documentId: doc._id.toString(),
+        userId: doc.owner ? doc.owner.toString() : undefined,
+        fileName: doc.originalName,
+        status: "error",
+        errorMessage:
+          "Procesamiento interrumpido (el proceso se detuvo antes de terminar). Vuelve a intentarlo.",
+        processedAt: new Date().toISOString(),
+        idempotencyKey: `document.processing_failed:${doc._id}:${Date.now()}`,
+      });
     } else {
       // Reciente: reintentar una vez (la tarea quedó huérfana por el reinicio).
       retried += 1;
@@ -277,6 +310,23 @@ async function runStartupRecovery() {
   } catch (error) {
     console.error("[recovery] Error ejecutando recuperación al arrancar:", error.message);
     return { markedError: 0, retried: 0, error: error.message };
+  }
+}
+
+/**
+ * Dispara un evento del motor de automatización sin romper el pipeline.
+ * El motor ya maneja reintentos y logs por flujo; aquí solo se evita que un
+ * error inesperado del motor afecte el resultado del procesamiento.
+ */
+async function emitAutomation(event, payload) {
+  try {
+    return await engine.emit(event, payload);
+  } catch (error) {
+    console.error(
+      `[automation] Error inesperado disparando ${event}:`,
+      error.message
+    );
+    return [];
   }
 }
 

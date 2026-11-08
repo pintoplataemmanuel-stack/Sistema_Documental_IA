@@ -5,13 +5,16 @@ const mongoose = require(path.join(B, "node_modules", "mongoose"));
 const DocumentChunk = require(path.join(B, "src", "models", "DocumentChunk"));
 const { mongodbUri } = require(path.join(B, "src", "config", "env"));
 const { ai } = require(path.join(B, "src", "config", "env"));
+const aiService = require(path.join(B, "src", "services", "aiService"));
+
+const DIMENSIONS = aiService.getEmbeddingDimensions();
 
 const INDEX = {
   name: ai.vectorSearchIndexName,
   type: "vectorSearch",
   definition: {
     fields: [
-      { type: "vector", path: "embedding", numDimensions: 1536, similarity: "cosine" },
+      { type: "vector", path: "embedding", numDimensions: DIMENSIONS, similarity: "cosine" },
       { type: "filter", path: "owner" },
       { type: "filter", path: "repository" },
     ],

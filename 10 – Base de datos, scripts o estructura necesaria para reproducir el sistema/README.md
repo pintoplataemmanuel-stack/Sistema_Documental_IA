@@ -18,9 +18,18 @@ MongoDB 7.0.2+). Para acceder a la base de datos:
 ### Índice de Atlas Vector Search (búsqueda semántica)
 
 La búsqueda inteligente requiere un índice `vectorSearch` sobre la colección
-`documentchunks` (1536 dimensiones, similitud coseno, filtros por `owner` y
-`repository`). Se crea/verifica con los scripts de esta carpeta (ver abajo) o
-desde **Atlas UI → Atlas Search → Create Search Index → JSON Editor**:
+`documentchunks` (similitud coseno, filtros por `owner` y `repository`). La
+dimensión depende del proveedor de embeddings:
+
+| Proveedor | Modelo | Dimensiones |
+|---|---|---|
+| Gemini (recomendado, gratuito) | `gemini-embedding-001` (768 con `outputDimensionality`) | 768 |
+| Ollama local (plan B) | `nomic-embed-text` | 768 |
+| OpenRouter/OpenAI (compatibilidad) | `openai/text-embedding-3-small` | 1536 |
+
+Los scripts leen la dimensión automáticamente desde `aiService`, así que no hay
+que editar el número a mano. También se puede crear desde **Atlas UI → Atlas
+Search → Create Search Index → JSON Editor**; por ejemplo, para Gemini:
 
 ```json
 {
@@ -28,7 +37,7 @@ desde **Atlas UI → Atlas Search → Create Search Index → JSON Editor**:
   "type": "vectorSearch",
   "definition": {
     "fields": [
-      { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
+      { "type": "vector", "path": "embedding", "numDimensions": 768, "similarity": "cosine" },
       { "type": "filter", "path": "owner" },
       { "type": "filter", "path": "repository" }
     ]
@@ -36,12 +45,15 @@ desde **Atlas UI → Atlas Search → Create Search Index → JSON Editor**:
 }
 ```
 
+> Al cambiar de proveedor de embeddings hay que regenerar los vectores con
+> `cd backend && npm run reindex` y recrear el índice con la nueva dimensión.
+
 ## Scripts (migrados desde `backend/scripts`)
 
 Estos scripts se mueven aquí como evidencia de pruebas y para reproducir el
 sistema. Los que usan el backend se ejecutan desde la raíz del repositorio
 (necesitan que exista `backend/node_modules` y `backend/.env` con la
-`MONGODB_URI` y credenciales de OpenRouter):
+`MONGODB_URI` y credenciales de Gemini/Groq):
 
 | Script | Descripción |
 |--------|-------------|
@@ -67,8 +79,11 @@ node "10 – Base de datos, scripts o estructura necesaria para reproducir el si
 ## Reproducir el sistema
 
 1. Clona el repositorio: `git clone https://github.com/pintoplataemmanuel-stack/Sistema_Documental_IA.git`
-2. Configura `backend/.env` con `MONGODB_URI`, `JWT_SECRET` y `OPENAI_API_KEY`
-   (OpenRouter) según `backend/.env.example`.
-3. Crea el índice vectorial: `node "10 – …/createVectorIndex.js"`.
-4. Levanta el backend (`cd backend && npm install && npm run dev`) y el
+2. Configura `backend/.env` con `MONGODB_URI`, `JWT_SECRET` y `GEMINI_API_KEY`
+   (nivel gratuito) según `backend/.env.example`. Groq es opcional como respaldo.
+3. Crea el índice vectorial (768 dimensiones con Gemini):
+   `node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/createVectorIndex.js"`.
+4. Si ya había documentos procesados con otro proveedor, reindexa:
+   `cd backend && npm run reindex`.
+5. Levanta el backend (`cd backend && npm install && npm run dev`) y el
    frontend (`cd frontend && npm install && npm run dev`).

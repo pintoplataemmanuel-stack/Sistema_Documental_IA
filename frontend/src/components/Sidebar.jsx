@@ -8,6 +8,7 @@ import {
   LogoutIcon,
   SparklesIcon,
   HelpIcon,
+  AlertIcon,
 } from './Icons';
 
 const NAV = [
@@ -15,6 +16,8 @@ const NAV = [
   { to: '/repos', label: 'Repositorios', icon: FolderIcon },
   { to: '/documents', label: 'Documentos', icon: FilesIcon },
   { to: '/search', label: 'Búsqueda Inteligente', icon: SearchIcon },
+  { to: '/notifications', label: 'Notificaciones', icon: AlertIcon },
+  { to: '/automation', label: 'Automatizaciones', icon: SparklesIcon },
 ];
 
 export default function Sidebar({ onOpenHelp }) {

@@ -10,6 +10,8 @@ import DocumentsPage from './pages/DocumentsPage';
 import RepositoryDetailPage from './pages/RepositoryDetailPage';
 import FileDetailPage from './pages/FileDetailPage';
 import SearchPage from './pages/SearchPage';
+import NotificationsPage from './pages/NotificationsPage';
+import AutomationPage from './pages/AutomationPage';
 
 export default function App() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
             <Route path="/repos" element={<RepositoriesPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/automation" element={<AutomationPage />} />
             <Route path="/repos/:repoId" element={<RepositoryDetailPage />} />
             <Route path="/repos/:repoId/files/:docId" element={<FileDetailPage />} />
           </Route>

@@ -6,7 +6,12 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "reindex": "node scripts/reindexEmbeddings.js",
+    "ai:check": "node scripts/checkAiProviders.js",
+    "ai:test": "node scripts/testAiProvider.js"
   },
   "keywords": [
     "mern",
@@ -17,6 +22,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@langchain/core": "^1.3.5",
+    "@langchain/openai": "^1.8.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",

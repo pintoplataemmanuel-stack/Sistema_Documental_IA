@@ -44,9 +44,32 @@ app.use(
   express.static(path.join(__dirname, "..", "uploads"))
 );
 
-// Health check
+// Health check: incluye el estado de los proveedores de IA (sin claves) y el
+// número de flujos de automatización registrados.
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
+  let ai = null;
+  let automationFlows = 0;
+
+  try {
+    const { getProviderStatus } = require("./services/llmService");
+    ai = getProviderStatus();
+  } catch (error) {
+    ai = { error: error.message };
+  }
+
+  try {
+    const { engine } = require("./automation");
+    automationFlows = engine.listFlows().length;
+  } catch (error) {
+    automationFlows = 0;
+  }
+
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    ai,
+    automation: { flows: automationFlows },
+  });
 });
 
 // Rutas (todas bajo el prefijo /api)
