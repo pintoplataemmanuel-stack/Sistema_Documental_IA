@@ -23,7 +23,10 @@ depender de n8n y sin tocar claves en el código.
 2. Inicia sesión con la cuenta de Google del proyecto.
 3. Pulsa **Create API key** (o **Crear clave de API**).
 4. Selecciona el proyecto y copia la clave. Empieza por `AIza...`.
-5. No la compartas ni la subas al repositorio.
+5. Si la clave aparece como **Unrestricted**, aplica **Add restrictions** →
+   **Restrict to Gemini API only**. Desde 2026, Gemini rechaza las claves
+   estándar sin restricciones.
+6. No la compartas ni la subas al repositorio.
 
 > El nivel gratuito de Gemini tiene límites por minuto y por día. Para el
 > proyecto son suficientes; si se agotan, el sistema cambia automáticamente a
