@@ -22,7 +22,8 @@ depender de n8n y sin tocar claves en el código.
 1. Abre <https://aistudio.google.com/apikey>.
 2. Inicia sesión con la cuenta de Google del proyecto.
 3. Pulsa **Create API key** (o **Crear clave de API**).
-4. Selecciona el proyecto y copia la clave. Empieza por `AIza...`.
+4. Selecciona el proyecto y copia la clave. Puede empezar por `AQ.` (clave de
+   autorización, formato nuevo de 2026) o por `AIza...` (clave estándar antigua).
 5. Si la clave aparece como **Unrestricted**, aplica **Add restrictions** →
    **Restrict to Gemini API only**. Desde 2026, Gemini rechaza las claves
    estándar sin restricciones.
@@ -40,7 +41,7 @@ Abre `backend/.env` y agrega o actualiza estas variables:
 
 ```env
 # --- Gemini (principal y gratuito) ---
-GEMINI_API_KEY=AIza...tu_clave...
+GEMINI_API_KEY=AQ...tu_clave...
 GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 GEMINI_NATIVE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
 GEMINI_CHAT_MODEL=gemini-3.5-flash-lite
@@ -85,7 +86,7 @@ Salida esperada con Gemini configurado:
 
 ```text
 === Proveedores de chat (orden de uso) ===
-  1. gemini | modelo: gemini-3.5-flash-lite | clave: AIza...xxxx
+  1. gemini | modelo: gemini-3.5-flash-lite | clave: AQ...xxxx
   2. groq | modelo: llama-3.3-70b-versatile | clave: gsk_...xxxx
 
 === Proveedores de embeddings ===
@@ -294,7 +295,8 @@ recursos suficientes para el modelo. Es un plan B local.
 | Síntoma | Causa probable | Solución |
 |---|---|---|
 | `No hay ningún proveedor de IA configurado` | Falta la clave en `.env` | Agrega `GEMINI_API_KEY` o `GROQ_API_KEY`. |
-| Gemini responde 404 | Modelo retirado o nombre incorrecto | Revisa `GEMINI_CHAT_MODEL`; usa `gemini-3.5-flash-lite` o `gemini-3.8-flash`. |
+| Gemini responde 404 | Modelo retirado o nombre incorrecto | Revisa `GEMINI_CHAT_MODEL`; usa un modelo que AI Studio muestre con nivel gratuito. |
+| Gemini responde 401 con clave `AQ.` | La clave de autorización nueva no siempre es aceptada por el endpoint compatible con OpenAI | Usa Groq como respaldo inmediato; si el chat debe ir por Gemini, hay que consumir el endpoint nativo con `x-goog-api-key`. |
 | Gemini responde 429 | Cuota gratuita agotada | Espera o usa Groq; el fallback es automático. |
 | `devolvió 3072 dimensiones y se esperaban 768` | Se usó el endpoint compatible en vez del nativo | Verifica `GEMINI_NATIVE_BASE_URL` y `GEMINI_EMBEDDING_DIMENSIONS=768`. |
 | La búsqueda responde en modo `keyword` | Índice vectorial ausente o dimensión distinta | Revisa el índice y ejecuta `npm run reindex`. |
