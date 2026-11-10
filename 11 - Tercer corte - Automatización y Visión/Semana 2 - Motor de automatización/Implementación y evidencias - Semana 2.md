@@ -36,8 +36,8 @@ el código y se ejecuta dentro del backend desplegado en Render.
 | Timeout por ejecución | Cumplido | `withTimeout`, `timeoutMs` por flujo |
 | Log por ejecución con fecha, entrada y resultado | Cumplido | Colección `automationruns` (`logs`, `input`, `output`) |
 | Claves en variables de entorno | Cumplido | `backend/.env.example`, sin claves en el código |
-| Chatbot migrado a modelo gratuito | Implementado; falta prueba con clave Gemini | `llmService.js`, `npm run ai:test` |
-| Plan B ante cuota o fallo | Cumplido | Groq/OpenRouter/Ollama y búsqueda por palabras clave |
+| Chatbot migrado a modelo gratuito | Cumplido | `llmService.js`, verificado con Gemini |
+| Plan B ante cuota o fallo | Cumplido | Groq/Ollama y búsqueda por palabras clave |
 | Pruebas unitarias | Cumplido | `backend/test/` — 18 pruebas |
 | Auditoría de acciones | Cumplido | Colección `auditlogs` + `GET /api/audit` |
 | Roles y control de acceso | Cumplido | `protect`, `authorize("admin")` |
@@ -69,7 +69,6 @@ flowchart LR
     API --> CHAT[llmService]
     CHAT --> GEMCHAT[Gemini chat]
     CHAT -->|fallback| GROQ[Groq]
-    CHAT -->|fallback| OR[OpenRouter]
     CHAT -->|fallback| OLLAMA[Ollama local]
 ```
 
@@ -177,8 +176,7 @@ Con `AI_PROVIDER=auto` el orden es:
 
 1. **Gemini** (`gemini-3.5-flash-lite` por defecto).
 2. **Groq** (`openai/gpt-oss-120b`).
-3. **OpenRouter/OpenAI** (compatibilidad con el proveedor anterior).
-4. **Ollama** local (solo si `OLLAMA_ENABLED=true`).
+3. **Ollama** local (solo si `OLLAMA_ENABLED=true`).
 
 Solo se incluyen los proveedores que tengan clave o estén habilitados. La cadena
 de respaldo se implementa con LangChain:
@@ -197,7 +195,6 @@ prueba automáticamente el siguiente proveedor configurado.
 | Gemini | `gemini-3.5-flash-lite` | Chat, clasificación, resumen, extracción y visión (Semana 3). |
 | Gemini | `gemini-embedding-001` (1536 dimensiones en este proyecto) | Embeddings para RAG. |
 | Groq | `openai/gpt-oss-120b` | Respaldo de chat. |
-| OpenRouter | `deepseek/deepseek-chat` | Compatibilidad con el proveedor anterior. |
 | Ollama | `llama3.2` / `nomic-embed-text` | Plan B local, sin cuotas. |
 
 > Se actualizaron los modelos porque `gemini-2.0-flash` fue retirado el
@@ -209,15 +206,14 @@ prueba automáticamente el siguiente proveedor configurado.
 El endpoint compatible con OpenAI de Gemini puede devolver 3072 dimensiones por
 defecto. Para que el índice de Atlas no quede inconsistente, el sistema usa el
 **endpoint nativo** `models/gemini-embedding-001:batchEmbedContents` y envía
-`outputDimensionality: 768`.
+`outputDimensionality: 1536`.
 
 Regla del sistema: **nunca se mezclan dimensiones**.
 
 | Proveedor | Dimensiones |
 |---|---|
-| Gemini `gemini-embedding-001` | 768 |
+| Gemini `gemini-embedding-001` | 1536 |
 | Ollama `nomic-embed-text` | 768 |
-| OpenRouter `text-embedding-3-small` | 1536 |
 
 Si el proveedor principal falla, solo se prueba otro proveedor con la **misma**
 dimensión. Si no hay ninguno, se usa la búsqueda por palabras clave.
@@ -240,7 +236,7 @@ Todas las claves viven en `backend/.env` (nunca en el repositorio). El archivo
 
 ```env
 AI_PROVIDER=auto
-AI_FALLBACK_PROVIDERS=groq,openrouter,ollama
+AI_FALLBACK_PROVIDERS=groq,ollama
 GEMINI_API_KEY=
 GEMINI_CHAT_MODEL=gemini-3.5-flash-lite
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
@@ -342,23 +338,22 @@ npm run ai:check   # muestra el orden y los modelos sin exponer claves
 npm run ai:test    # hace una llamada real de chat y otra de embeddings
 ```
 
-Evidencia obtenida en el entorno de desarrollo (con el proveedor de
-compatibilidad OpenRouter, porque aún no había clave Gemini):
+Evidencia obtenida en el entorno de desarrollo con Gemini configurado:
 
 ```text
 === Orden de proveedores de chat ===
-  1. openrouter (deepseek/deepseek-chat)
+  1. gemini (gemini-3.5-flash-lite)
+  2. groq (openai/gpt-oss-120b)
 
 === Prueba de chat (JSON) ===
   OK: {"ok":true,"mensaje":"El proveedor de IA está funcionando correctamente."}
 
 === Prueba de embeddings ===
-  OK: 1536 dimensiones con openrouter / openai/text-embedding-3-small
+  OK: 1536 dimensiones con gemini / gemini-embedding-001
 ```
 
-> Esa prueba valida la cadena de LangChain, el parseo de JSON y los embeddings.
-> Al agregar `GEMINI_API_KEY`, el mismo comando debe mostrar Gemini primero y
-> 1536 dimensiones (la dimensión del índice de Atlas del proyecto).
+> La prueba valida la cadena de LangChain, el parseo de JSON, los embeddings y
+> la coincidencia con el índice de Atlas del proyecto (1536 dimensiones).
 
 ### 10.3 Frontend
 
@@ -416,10 +411,10 @@ npm run dev
 
 | Pendiente | Por qué | Acción |
 |---|---|---|
-| Clave de Gemini | No estaba configurada al implementar | Seguir `Guía de configuración - Gemini y Groq.md`. |
-| Clave de Groq | Respaldo de chat | Crear en `console.groq.com/keys` y agregar al `.env`. |
-| Índice de Atlas en 768 | Hoy puede estar en 1536 (OpenRouter) | Borrar `vector_index`, `npm run reindex`, crear el índice en 768. |
-| Reindexación | Los vectores actuales son de 1536 | Ejecutar `npm run reindex` después del cambio de proveedor. |
+| Clave de Gemini | Verificada en vivo | Configurada en `backend/.env`. |
+| Clave de Groq | Respaldo de chat | Configurada en `backend/.env`. |
+| Índice de Atlas en 1536 | Coincide con Gemini y con los 43 fragmentos | Sin cambios; verificado con `checkVectorIndex.js`. |
+| Reindexación | Los 43 fragmentos ya usan Gemini | Ejecutado `npm run reindex` sin recrear el índice. |
 | Despliegue en Render | Las variables nuevas no están en producción | Agregar las variables y redeployar. |
 | Export de n8n | No se conserva | Anexarlo si el docente lo solicita; el inventario está marcado como reconstruido. |
 
@@ -432,7 +427,7 @@ npm run dev
 - [x] Reintentos, timeout, idempotencia y logs por ejecución.
 - [x] Auditoría de acciones y consulta por rol.
 - [x] Notificaciones internas y su interfaz en el frontend.
-- [x] Chat migrado a Gemini con respaldo Groq/OpenRouter/Ollama.
+- [x] Chat migrado a Gemini con respaldo Groq/Ollama.
 - [x] Embeddings con dimensión controlada y plan B por palabras clave.
 - [x] 18 pruebas unitarias aprobadas.
 - [x] Build del frontend exitoso.

@@ -19,16 +19,6 @@ module.exports = {
     secret: process.env.JWT_SECRET || "dev_secret_no_usar_en_produccion",
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   },
-  // Compatibilidad con el proveedor anterior (OpenRouter / DeepSeek / OpenAI).
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || "",
-    baseUrl: process.env.OPENAI_BASE_URL || "https://openrouter.ai/api/v1",
-    model: process.env.OPENAI_MODEL || "deepseek/deepseek-chat",
-    embeddingModel:
-      process.env.OPENAI_EMBEDDING_MODEL || "openai/text-embedding-3-small",
-    // Modelo multimodal para la lectura de facturas (Semana 3).
-    visionModel: process.env.OPENAI_VISION_MODEL || "google/gemini-2.5-flash",
-  },
   ai: {
     chunkSize: Number(process.env.AI_CHUNK_SIZE) || 1500,
     chunkOverlap: Number(process.env.AI_CHUNK_OVERLAP) || 150,
@@ -42,11 +32,10 @@ module.exports = {
 
     // ---- Proveedores gratuitos ----
     // auto: usa el primero configurado en este orden:
-    // Gemini -> Groq -> OpenRouter/OpenAI -> Ollama.
+    // Gemini -> Groq -> Ollama.
     provider: process.env.AI_PROVIDER || "auto",
     fallbackProviders: splitList(process.env.AI_FALLBACK_PROVIDERS, [
       "groq",
-      "openrouter",
       "ollama",
     ]),
     chatTimeoutMs: Number(process.env.AI_CHAT_TIMEOUT_MS) || 60000,
@@ -58,12 +47,12 @@ module.exports = {
       minConfidence: Number(process.env.VISION_MIN_CONFIDENCE) || 0.85,
       timeoutMs: Number(process.env.VISION_TIMEOUT_MS) || 90000,
       maxRetries: Number(process.env.VISION_MAX_RETRIES) || 0,
-      // Tope de tokens de salida. Evita que proveedores como OpenRouter
-      // rechacen la petición por reservar el máximo del modelo.
+      // Tope de tokens de salida para que la petición no sea rechazada por
+      // reservar el máximo del modelo.
       maxTokens: Number(process.env.VISION_MAX_TOKENS) || 4096,
     },
 
-    // Proveedor de embeddings. auto: Gemini -> Ollama -> OpenRouter.
+    // Proveedor de embeddings. auto: Gemini -> Ollama.
     embeddingsProvider: process.env.EMBEDDINGS_PROVIDER || "auto",
     // Si se define, debe coincidir con la dimensión del índice de Atlas.
     embeddingDimensions: process.env.EMBEDDING_DIMENSIONS
@@ -86,7 +75,7 @@ module.exports = {
       embeddingModel:
         process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001",
       embeddingDimensions:
-        Number(process.env.GEMINI_EMBEDDING_DIMENSIONS) || 768,
+        Number(process.env.GEMINI_EMBEDDING_DIMENSIONS) || 1536,
     },
     groq: {
       apiKey: process.env.GROQ_API_KEY || "",

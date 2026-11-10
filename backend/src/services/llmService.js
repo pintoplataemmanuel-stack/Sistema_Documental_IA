@@ -1,12 +1,12 @@
 const { ChatOpenAI } = require("@langchain/openai");
 const { HumanMessage, SystemMessage } = require("@langchain/core/messages");
 const { StringOutputParser } = require("@langchain/core/output_parsers");
-const { ai: aiConfig, openai: openaiConfig } = require("../config/env");
+const { ai: aiConfig } = require("../config/env");
 
 /**
  * Construye la configuración de un proveedor compatible con la API de OpenAI.
- * Todos los proveedores gratuitos elegidos (Gemini, Groq y Ollama) exponen un
- * endpoint compatible, lo que permite usar el mismo modelo de LangChain.
+ * Todos los proveedores (Gemini, Groq y Ollama) exponen un endpoint compatible,
+ * lo que permite usar el mismo modelo de LangChain.
  */
 function buildProvider(name) {
   switch (name) {
@@ -29,15 +29,6 @@ function buildProvider(name) {
         model: aiConfig.groq.chatModel,
         jsonMode: true,
       };
-    case "openrouter":
-      if (!openaiConfig.apiKey) return null;
-      return {
-        name: "openrouter",
-        apiKey: openaiConfig.apiKey,
-        baseUrl: openaiConfig.baseUrl,
-        model: openaiConfig.model,
-        jsonMode: true,
-      };
     case "ollama":
       if (!aiConfig.ollama.enabled) return null;
       return {
@@ -54,11 +45,11 @@ function buildProvider(name) {
 
 /**
  * Orden de proveedores de chat. Si AI_PROVIDER=auto se usa el orden natural:
- * Gemini -> Groq -> OpenRouter -> Ollama. Si se fija un proveedor, se respeta
- * y luego se agregan los de AI_FALLBACK_PROVIDERS.
+ * Gemini -> Groq -> Ollama. Si se fija un proveedor, se respeta y luego se
+ * agregan los de AI_FALLBACK_PROVIDERS.
  */
 function getChatProviderOrder() {
-  const configured = ["gemini", "groq", "openrouter", "ollama"]
+  const configured = ["gemini", "groq", "ollama"]
     .map(buildProvider)
     .filter(Boolean);
 
@@ -112,15 +103,15 @@ function createChatModel(provider, temperature) {
 
 /**
  * Devuelve un modelo de LangChain con cadena de respaldo.
- * Si Gemini falla por cuota o error, LangChain prueba automáticamente Groq,
- * OpenRouter y Ollama (los que estén configurados).
+ * Si Gemini falla por cuota o error, LangChain prueba automáticamente Groq
+ * y Ollama (los que estén configurados).
  */
 function getChatRunnable({ temperature = 0.1 } = {}) {
   const providers = getChatProviderOrder();
 
   if (providers.length === 0) {
     throw new Error(
-      "No hay ningún proveedor de IA configurado. Define GEMINI_API_KEY, GROQ_API_KEY u OPENAI_API_KEY en el .env."
+      "No hay ningún proveedor de IA configurado. Define GEMINI_API_KEY o GROQ_API_KEY en el .env."
     );
   }
 

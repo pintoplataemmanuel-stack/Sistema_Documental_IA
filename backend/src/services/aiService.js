@@ -1,5 +1,5 @@
 const { OpenAI } = require("openai");
-const { ai: aiConfig, openai: openaiConfig } = require("../config/env");
+const { ai: aiConfig } = require("../config/env");
 const { runJsonChain } = require("./llmService");
 const auditService = require("./auditService");
 
@@ -26,18 +26,15 @@ const KEY_FIELDS = {
   Otro: ["titulo", "fecha", "tipo_documento"],
 };
 
-const OPENROUTER_EMBEDDING_DIMENSIONS = 1536;
-
 function trimText(text, max = aiConfig.chatTextLimit) {
   const clean = String(text || "").replace(/\s+/g, " ").trim();
   return clean.length > max ? clean.slice(0, max) : clean;
 }
 
 /**
- * Configuración de un proveedor de embeddings. Gemini y Ollama usan su API
- * nativa; OpenRouter habla la API compatible con OpenAI. La dimensión de
- * Gemini es configurable (768/1536/3072); en este proyecto se fija en 1536
- * para coincidir con el índice de Atlas existente.
+ * Configuración de un proveedor de embeddings. Gemini usa su API nativa y
+ * permite fijar la dimensión (768/1536/3072); en este proyecto se usa 1536
+ * para coincidir con el índice de Atlas existente. Ollama es el plan local.
  */
 function buildEmbeddingProvider(name) {
   switch (name) {
@@ -61,26 +58,17 @@ function buildEmbeddingProvider(name) {
         model: aiConfig.ollama.embeddingModel,
         dimensions: aiConfig.ollama.embeddingDimensions,
       };
-    case "openrouter":
-      if (!openaiConfig.apiKey) return null;
-      return {
-        name: "openrouter",
-        apiKey: openaiConfig.apiKey,
-        baseUrl: openaiConfig.baseUrl,
-        model: openaiConfig.embeddingModel,
-        dimensions: OPENROUTER_EMBEDDING_DIMENSIONS,
-      };
     default:
       return null;
   }
 }
 
 /**
- * Orden de proveedores de embeddings. No se mezclan dimensiones: si el índice
- * de Atlas está en 768, solo se usan Gemini/Ollama; si está en 1536, OpenRouter.
+ * Orden de proveedores de embeddings. No se mezclan dimensiones: solo se usan
+ * proveedores compatibles con la dimensión configurada del índice de Atlas.
  */
 function getEmbeddingProviderOrder() {
-  const configured = ["gemini", "ollama", "openrouter"]
+  const configured = ["gemini", "ollama"]
     .map(buildEmbeddingProvider)
     .filter(Boolean);
 
@@ -94,9 +82,8 @@ function getEmbeddingProviderOrder() {
     ? buildEmbeddingProvider(preferredName)
     : null;
 
-  // Nunca se mezclan dimensiones: si el primer proveedor es Gemini (768), el
-  // respaldo también debe ser de 768 (Ollama). OpenRouter (1536) solo se usa
-  // si el índice y el proveedor principal son de 1536.
+  // Nunca se mezclan dimensiones: el respaldo debe usar la misma dimensión
+  // que el proveedor principal y que el índice de Atlas.
   const targetDimensions =
     aiConfig.embeddingDimensions ||
     (preferred ? preferred.dimensions : configured[0].dimensions);
@@ -137,7 +124,7 @@ function getEmbeddingInfo() {
 
 function getEmbeddingDimensions() {
   const info = getEmbeddingInfo();
-  return info.dimensions || OPENROUTER_EMBEDDING_DIMENSIONS;
+  return info.dimensions || aiConfig.gemini.embeddingDimensions || 1536;
 }
 
 /**
@@ -145,7 +132,7 @@ function getEmbeddingDimensions() {
  *
  * Se usa el endpoint nativo (no el compatible con OpenAI) porque permite fijar
  * `outputDimensionality` y así garantizar que el índice de Atlas y los vectores
- * tengan exactamente la misma dimensión (768 por defecto).
+ * tengan exactamente la misma dimensión (1536 en este proyecto).
  */
 async function generateGeminiEmbeddings(texts, provider) {
   const modelPath = provider.model.startsWith("models/")
@@ -211,7 +198,7 @@ async function generateEmbeddings(input) {
   const providers = getEmbeddingProviderOrder();
   if (providers.length === 0) {
     throw new Error(
-      "No hay proveedor de embeddings configurado. Define GEMINI_API_KEY, habilita Ollama o configura OPENAI_API_KEY."
+      "No hay proveedor de embeddings configurado. Define GEMINI_API_KEY o habilita Ollama."
     );
   }
 

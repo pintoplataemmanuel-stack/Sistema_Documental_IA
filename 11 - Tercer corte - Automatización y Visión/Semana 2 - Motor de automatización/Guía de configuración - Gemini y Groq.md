@@ -51,7 +51,7 @@ GEMINI_EMBEDDING_DIMENSIONS=1536
 
 # --- Orden de proveedores ---
 AI_PROVIDER=auto
-AI_FALLBACK_PROVIDERS=groq,openrouter,ollama
+AI_FALLBACK_PROVIDERS=groq,ollama
 EMBEDDINGS_PROVIDER=auto
 ```
 
@@ -66,15 +66,8 @@ Notas:
   Gemini admite 768, 1536 y 3072 dimensiones; este proyecto conserva **1536**
   porque el índice `vector_index` ya está creado con esa dimensión.
 
-Si prefieres mantener los embeddings en el proveedor anterior, deja
-`EMBEDDINGS_PROVIDER` en ese proveedor:
-
-```env
-EMBEDDINGS_PROVIDER=openrouter
-```
-
-Así el chatbot usa Gemini, pero los vectores siguen generándose con el
-proveedor anterior. En ambos casos la dimensión debe seguir siendo 1536.
+Gemini es el proveedor principal de chat, visión y embeddings. Groq se usa
+como respaldo de chat y Ollama local queda como plan B de embeddings.
 
 ---
 

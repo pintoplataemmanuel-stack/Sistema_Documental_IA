@@ -25,7 +25,7 @@ async function main() {
   const info = aiService.getEmbeddingInfo();
   if (!info.configured) {
     throw new Error(
-      "No hay proveedor de embeddings configurado. Define GEMINI_API_KEY, habilita OLLAMA o configura OPENAI_API_KEY."
+      "No hay proveedor de embeddings configurado. Define GEMINI_API_KEY o habilita OLLAMA."
     );
   }
 

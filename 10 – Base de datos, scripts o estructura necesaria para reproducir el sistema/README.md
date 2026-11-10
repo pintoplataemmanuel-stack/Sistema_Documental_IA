@@ -23,9 +23,8 @@ dimensión depende del proveedor de embeddings:
 
 | Proveedor | Modelo | Dimensiones |
 |---|---|---|
-| Gemini (recomendado, gratuito) | `gemini-embedding-001` (`outputDimensionality` configurable) | 1536 en este proyecto |
+| Gemini (proveedor principal) | `gemini-embedding-001` (`outputDimensionality` configurable) | 1536 en este proyecto |
 | Ollama local (plan B) | `nomic-embed-text` | 768 |
-| OpenRouter/OpenAI (compatibilidad) | `openai/text-embedding-3-small` | 1536 |
 
 Los scripts leen la dimensión automáticamente desde `aiService`, así que no hay
 que editar el número a mano. También se puede crear desde **Atlas UI → Atlas
@@ -62,7 +61,6 @@ sistema. Los que usan el backend se ejecutan desde la raíz del repositorio
 | `createVectorIndex.js` | Crea el índice de Atlas Vector Search y espera a que esté READY. |
 | `checkVectorIndex.js` | Verifica si el índice existe y muestra su definición JSON. |
 | `testPipelineMock.js` | Ejecuta el pipeline completo sin llamar a la API (mocks de IA). |
-| `testOpenRouter.js` | Valida clasificación, resumen, campos y embeddings contra OpenRouter. |
 | `testErrorPath.js` | Verifica que un documento en `processing` pase a `error` al fallar la IA. |
 | `testRecovery.js` | Prueba la recuperación de documentos "colgados" en `processing`. |
 | `testDay3.js` | Prueba local de extracción de texto (TXT/PDF) y fragmentación. |

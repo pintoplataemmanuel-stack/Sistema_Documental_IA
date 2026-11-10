@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { OpenAI } = require("openai");
-const { ai: aiConfig, openai: openaiConfig } = require("../config/env");
+const { ai: aiConfig } = require("../config/env");
 const {
   getChatProviderOrder,
   parseJsonContent,
@@ -262,8 +262,8 @@ function isUnreadable({ data = {}, confianza = 0 } = {}) {
 }
 
 /**
- * Proveedores multimodales configurados. Gemini primero (nivel gratuito) y
- * OpenRouter como respaldo compatible con la API de OpenAI.
+ * Proveedores multimodales configurados. Gemini es el único proveedor de
+ * visión del proyecto; si no hay clave, se devuelve un error claro.
  */
 function getVisionProviderOrder() {
   const providers = [];
@@ -274,15 +274,6 @@ function getVisionProviderOrder() {
       apiKey: aiConfig.gemini.apiKey,
       baseUrl: aiConfig.gemini.baseUrl,
       model: aiConfig.gemini.visionModel,
-    });
-  }
-
-  if (openaiConfig.apiKey) {
-    providers.push({
-      name: "openrouter",
-      apiKey: openaiConfig.apiKey,
-      baseUrl: openaiConfig.baseUrl,
-      model: openaiConfig.visionModel,
     });
   }
 
@@ -300,7 +291,7 @@ async function extractFromImage(filePath, mimeType) {
   const providers = getVisionProviderOrder();
   if (providers.length === 0) {
     throw new Error(
-      "No hay proveedor de visión configurado. Define GEMINI_API_KEY o OPENAI_API_KEY (OpenRouter) en el .env."
+      "No hay proveedor de visión configurado. Define GEMINI_API_KEY en el .env."
     );
   }
 

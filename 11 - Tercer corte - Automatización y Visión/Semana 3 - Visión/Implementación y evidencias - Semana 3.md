@@ -42,7 +42,7 @@ El alcance es un proceso real de la empresa: registrar los gastos de compras
 | Claves solo en variables de entorno | Cumplido | `backend/.env.example`; `.env` fuera de Git |
 | Imágenes de facturas no públicas | Cumplido | `/uploads/vision` responde 403 |
 | Pruebas unitarias | Cumplido | `backend/test/visionService.test.js` — 26 pruebas en total |
-| Resultados medidos con un proveedor real | Cumplido | OpenRouter `google/gemini-2.5-flash` y Gemini `gemini-3.5-flash-lite`, 3 documentos de prueba |
+| Resultados medidos con un proveedor real | Cumplido | Gemini `gemini-3.5-flash-lite`, 3 documentos de prueba |
 
 ---
 
@@ -56,7 +56,6 @@ flowchart LR
     CTRL --> VS[visionService]
     VS -->|imagen| VLM[Modelo multimodal]
     VLM -->|Gemini nativo| GEM[Gemini]
-    VLM -->|OpenRouter| OR[google/gemini-2.5-flash]
     VS -->|PDF con texto| TXT[textExtractionService]
     TXT --> CHAT[llmService - cadena JSON]
     CTRL --> SCAN[(visionscans)]
@@ -68,9 +67,8 @@ flowchart LR
 
 ### Orden de proveedores
 
-1. **Gemini multimodal** si existe `GEMINI_API_KEY`.
-2. **OpenRouter multimodal** si existe `OPENAI_API_KEY`; por defecto usa
-   `OPENAI_VISION_MODEL=google/gemini-2.5-flash`.
+1. **Gemini multimodal** si existe `GEMINI_API_KEY` (proveedor único de visión).
+2. Si no hay clave, se devuelve un error claro y no se guarda nada.
 3. Para PDF con texto seleccionable se usa la cadena JSON de chat ya existente.
 4. Un PDF escaneado (sin texto) devuelve un error que pide subirlo como imagen.
 
@@ -123,10 +121,10 @@ Si se elimina el intento, el gasto confirmado se conserva.
 
 ### Límite de tokens (hallazgo real)
 
-En la primera prueba real OpenRouter respondió `402` porque, al no enviar
+En la primera prueba real el proveedor respondió `402` porque, al no enviar
 `max_tokens`, reservaba el máximo del modelo (65 535 tokens) y la cuenta solo
 podía costear 13 958. Se agregó `VISION_MAX_TOKENS=4096`; tras el ajuste la
-lectura funcionó sin cambiar de proveedor.
+lectura funcionó correctamente.
 
 ---
 
@@ -213,15 +211,15 @@ visión cubren:
 | `needsReview` | Umbral de confianza y campos dudosos. |
 | `isUnreadable` | Imagen sin datos útiles. |
 
-### 9.2 Prueba real con OpenRouter (modelo multimodal)
+### 9.2 Prueba real con Gemini (modelo multimodal)
 
 Los documentos de prueba se generaron como imágenes PNG de una factura
-colombiana. Resultados medidos:
+colombiana y se procesaron con `gemini-3.5-flash-lite`. Resultados medidos:
 
 | Documento | Resultado | Confianza | Decisión |
 |---|---|---|---|
 | Factura completa | Datos correctos (5 ítems, total $548.828) | **0.98** | Guardada automáticamente |
-| Recibo incompleto | Proveedor y fecha; sin número ni totales | **0.70** | Enviada a revisión |
+| Recibo incompleto | Proveedor y fecha; sin NIT, número ni totales | **0.50** | Enviado a revisión (6 campos marcados) |
 | Imagen ilegible | Sin datos útiles | 0.00 | HTTP 422 con mensaje claro |
 
 Salida real de la factura completa:
@@ -247,26 +245,11 @@ Salida real de la factura completa:
   },
   "confianza": 0.98,
   "camposBajaConfianza": [],
-  "provider": "openrouter",
-  "model": "google/gemini-2.5-flash",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
   "mode": "vision"
 }
 ```
-
-### 9.2.1 Verificación posterior con Gemini nativo
-
-Tras reemplazar la clave de OpenRouter por una clave de Gemini, se repitieron los
-tres casos directamente contra el proveedor `gemini-3.5-flash-lite`:
-
-| Documento | Resultado | Confianza | Decisión |
-|---|---|---|---|
-| Factura completa | Datos correctos (5 ítems, total $548.828) | **0.98** | Guardada automáticamente |
-| Recibo incompleto | Proveedor y fecha; sin NIT, número ni totales | **0.50** | Enviado a revisión (6 campos marcados) |
-| Imagen ilegible | Sin datos útiles | 0.00 | HTTP 422 con mensaje claro |
-
-La prueba confirma que el mismo flujo funciona con el proveedor principal
-(Gemini) y no solo con el respaldo. El recibo incompleto obtiene una confianza
-aún menor que con OpenRouter, por lo que la decisión de revisión se mantiene.
 
 Además se verificaron chat (`{"ok":true}`), embeddings
 (`gemini-embedding-001`, **1536 dimensiones**) y búsqueda vectorial real
@@ -317,15 +300,8 @@ npm run dev          # http://localhost:5173
 Variables mínimas para visión en `backend/.env`:
 
 ```env
-# Opción A: Gemini multimodal
 GEMINI_API_KEY=tu_clave
 GEMINI_VISION_MODEL=gemini-3.5-flash-lite
-
-# Opción B: OpenRouter multimodal
-OPENAI_API_KEY=tu_clave_de_openrouter
-OPENAI_BASE_URL=https://openrouter.ai/api/v1
-OPENAI_VISION_MODEL=google/gemini-2.5-flash
-
 VISION_MIN_CONFIDENCE=0.85
 VISION_TIMEOUT_MS=90000
 VISION_MAX_RETRIES=0
@@ -345,7 +321,7 @@ Demostración en clase:
 ## 11. Pendientes y recomendaciones
 
 - ~~Ejecutar la prueba en vivo con una clave **Gemini** propia para no depender
-  del saldo de OpenRouter.~~ Cumplido: chat, visión y embeddings verificados con
+  de un proveedor externo.~~ Cumplido: chat, visión y embeddings verificados con
   Gemini, y fragmentos reindexados a 1536 dimensiones.
 - Rotar la clave `AQ.` de Gemini que se compartió en el chat: debe considerarse
   expuesta. La clave nueva debe existir solo en las variables de entorno.

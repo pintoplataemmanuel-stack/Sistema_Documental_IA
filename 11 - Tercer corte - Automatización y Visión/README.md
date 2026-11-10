@@ -23,9 +23,9 @@ Esta carpeta concentra los entregables y evidencias del tercer corte de
 - **Semana 3:** implementada y probada. Lectura de facturas y recibos (imagen o
   PDF) con confianza, guardado automático desde `0.85`, revisión manual, error
   claro para imágenes ilegibles y página **Facturas IA**. Evidencia real con
-  OpenRouter `google/gemini-2.5-flash` y con Gemini `gemini-3.5-flash-lite`:
-  factura completa con 98 % de confianza, recibo incompleto enviado a revisión
-  e imagen ilegible rechazada con HTTP 422. Las 26 pruebas del backend pasan.
+  Gemini `gemini-3.5-flash-lite`: factura completa con 98 % de confianza, recibo
+  incompleto al 50 % enviado a revisión e imagen ilegible rechazada con HTTP 422.
+  Las 26 pruebas del backend pasan.
 
 ## Decisiones del grupo
 
