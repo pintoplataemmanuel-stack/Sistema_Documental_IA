@@ -23,7 +23,7 @@ dimensión depende del proveedor de embeddings:
 
 | Proveedor | Modelo | Dimensiones |
 |---|---|---|
-| Gemini (recomendado, gratuito) | `gemini-embedding-001` (768 con `outputDimensionality`) | 768 |
+| Gemini (recomendado, gratuito) | `gemini-embedding-001` (`outputDimensionality` configurable) | 1536 en este proyecto |
 | Ollama local (plan B) | `nomic-embed-text` | 768 |
 | OpenRouter/OpenAI (compatibilidad) | `openai/text-embedding-3-small` | 1536 |
 
@@ -37,7 +37,7 @@ Search → Create Search Index → JSON Editor**; por ejemplo, para Gemini:
   "type": "vectorSearch",
   "definition": {
     "fields": [
-      { "type": "vector", "path": "embedding", "numDimensions": 768, "similarity": "cosine" },
+      { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
       { "type": "filter", "path": "owner" },
       { "type": "filter", "path": "repository" }
     ]
@@ -46,7 +46,9 @@ Search → Create Search Index → JSON Editor**; por ejemplo, para Gemini:
 ```
 
 > Al cambiar de proveedor de embeddings hay que regenerar los vectores con
-> `cd backend && npm run reindex` y recrear el índice con la nueva dimensión.
+> `cd backend && npm run reindex`. La dimensión debe coincidir con el índice;
+> en este proyecto se usa 1536. Solo si cambias la dimensión hay que recrear el
+> índice.
 
 ## Scripts (migrados desde `backend/scripts`)
 
@@ -81,7 +83,8 @@ node "10 – Base de datos, scripts o estructura necesaria para reproducir el si
 1. Clona el repositorio: `git clone https://github.com/pintoplataemmanuel-stack/Sistema_Documental_IA.git`
 2. Configura `backend/.env` con `MONGODB_URI`, `JWT_SECRET` y `GEMINI_API_KEY`
    (nivel gratuito) según `backend/.env.example`. Groq es opcional como respaldo.
-3. Crea el índice vectorial (768 dimensiones con Gemini):
+3. Crea el índice vectorial (1536 dimensiones en este proyecto, la dimensión
+   configurada para Gemini):
    `node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/createVectorIndex.js"`.
 4. Si ya había documentos procesados con otro proveedor, reindexa:
    `cd backend && npm run reindex`.

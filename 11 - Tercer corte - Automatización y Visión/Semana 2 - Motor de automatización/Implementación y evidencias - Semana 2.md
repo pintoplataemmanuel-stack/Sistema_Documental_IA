@@ -195,7 +195,7 @@ prueba automáticamente el siguiente proveedor configurado.
 | Proveedor | Modelo por defecto | Uso |
 |---|---|---|
 | Gemini | `gemini-3.5-flash-lite` | Chat, clasificación, resumen, extracción y visión (Semana 3). |
-| Gemini | `gemini-embedding-001` (768 dimensiones) | Embeddings para RAG. |
+| Gemini | `gemini-embedding-001` (1536 dimensiones en este proyecto) | Embeddings para RAG. |
 | Groq | `openai/gpt-oss-120b` | Respaldo de chat. |
 | OpenRouter | `deepseek/deepseek-chat` | Compatibilidad con el proveedor anterior. |
 | Ollama | `llama3.2` / `nomic-embed-text` | Plan B local, sin cuotas. |
@@ -244,7 +244,7 @@ AI_FALLBACK_PROVIDERS=groq,openrouter,ollama
 GEMINI_API_KEY=
 GEMINI_CHAT_MODEL=gemini-3.5-flash-lite
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
-GEMINI_EMBEDDING_DIMENSIONS=768
+GEMINI_EMBEDDING_DIMENSIONS=1536
 GROQ_API_KEY=
 EMBEDDINGS_PROVIDER=auto
 ```
@@ -358,7 +358,7 @@ compatibilidad OpenRouter, porque aún no había clave Gemini):
 
 > Esa prueba valida la cadena de LangChain, el parseo de JSON y los embeddings.
 > Al agregar `GEMINI_API_KEY`, el mismo comando debe mostrar Gemini primero y
-> 768 dimensiones.
+> 1536 dimensiones (la dimensión del índice de Atlas del proyecto).
 
 ### 10.3 Frontend
 

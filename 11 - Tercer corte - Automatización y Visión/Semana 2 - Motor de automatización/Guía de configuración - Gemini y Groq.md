@@ -46,7 +46,8 @@ GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 GEMINI_NATIVE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
 GEMINI_CHAT_MODEL=gemini-3.5-flash-lite
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
-GEMINI_EMBEDDING_DIMENSIONS=768
+# Debe coincidir con el índice de Atlas de este proyecto (1536 dimensiones)
+GEMINI_EMBEDDING_DIMENSIONS=1536
 
 # --- Orden de proveedores ---
 AI_PROVIDER=auto
@@ -61,17 +62,19 @@ Notas:
   `GEMINI_CHAT_MODEL`.
 - No uses `gemini-2.0-flash`: fue retirado el 1 de junio de 2026.
 - No uses `text-embedding-004`: fue retirado el 14 de enero de 2026.
-- `GEMINI_EMBEDDING_DIMENSIONS=768` debe coincidir con el índice de Atlas.
+- `GEMINI_EMBEDDING_DIMENSIONS=1536` debe coincidir con el índice de Atlas.
+  Gemini admite 768, 1536 y 3072 dimensiones; este proyecto conserva **1536**
+  porque el índice `vector_index` ya está creado con esa dimensión.
 
-Si no quieres migrar los embeddings todavía, puedes dejar el chat en Gemini y
-los embeddings en el proveedor anterior:
+Si prefieres mantener los embeddings en el proveedor anterior, deja
+`EMBEDDINGS_PROVIDER` en ese proveedor:
 
 ```env
 EMBEDDINGS_PROVIDER=openrouter
 ```
 
-Así el chatbot ya usa Gemini, pero los vectores siguen en 1536 dimensiones y no
-hay que recrear el índice. Es una opción válida para la Semana 2.
+Así el chatbot usa Gemini, pero los vectores siguen generándose con el
+proveedor anterior. En ambos casos la dimensión debe seguir siendo 1536.
 
 ---
 
@@ -93,7 +96,7 @@ Salida esperada con Gemini configurado:
 {
   "provider": "gemini",
   "model": "gemini-embedding-001",
-  "dimensions": 768,
+  "dimensions": 1536,
   "configured": true
 }
 ```
@@ -119,7 +122,7 @@ Salida esperada:
   OK: {"ok":true,"mensaje":"..."}
 
 === Prueba de embeddings ===
-  OK: 768 dimensiones con gemini / gemini-embedding-001
+  OK: 1536 dimensiones con gemini / gemini-embedding-001
 ```
 
 Si el chat falla con Gemini pero responde con Groq, la cadena de respaldo está
@@ -127,64 +130,36 @@ funcionando. Revisa la cuota o la clave de Gemini.
 
 ---
 
-## 6. Migrar el índice de Atlas a 768 dimensiones
+## 6. Reindexar embeddings sin recrear el índice
 
-**Solo si cambiaste los embeddings a Gemini.** Si dejaste
-`EMBEDDINGS_PROVIDER=openrouter`, salta esta sección.
+**Obligatorio al cambiar de proveedor o de modelo de embeddings.** Los vectores
+y el índice deben coincidir; si no, la búsqueda vectorial falla y el sistema usa
+palabras clave. En este proyecto el índice `vector_index` usa **1536
+dimensiones**, por eso Gemini se configura con `GEMINI_EMBEDDING_DIMENSIONS=1536`.
 
-El índice actual puede tener 1536 dimensiones (OpenRouter). Gemini usa 768. Los
-vectores y el índice deben coincidir; si no, la búsqueda vectorial falla y el
-sistema usa palabras clave.
+1. Confirma la dimensión del índice en MongoDB Atlas → cluster del proyecto →
+   **Atlas Search** → `vector_index`, o con:
 
-Orden recomendado:
+   ```bash
+   node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/checkVectorIndex.js"
+   ```
 
-1. Entra a MongoDB Atlas → cluster del proyecto → **Atlas Search**.
-2. Ubica el índice `vector_index` sobre la colección `documentchunks`.
-3. **Elimínalo** (Delete).
-4. Regenera los vectores con Gemini:
+2. Ajusta `GEMINI_EMBEDDING_DIMENSIONS` a esa dimensión (1536 en este proyecto).
+3. Regenera los vectores con el proveedor actual:
 
    ```bash
    cd backend
    npm run reindex
    ```
 
-   Debe mostrar el proveedor, el modelo, 768 dimensiones y cuántos fragmentos
-   reindexó.
+   Debe mostrar `gemini / gemini-embedding-001 / 1536 dimensiones` y cuántos
+   fragmentos reindexó.
+4. Prueba el chat en la aplicación. La búsqueda debe responder en modo `vector`
+   y seguir citando fuentes.
 
-5. Crea el índice nuevo. Puedes usar el script del repositorio:
-
-   ```bash
-   node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/createVectorIndex.js"
-   ```
-
-   O hacerlo desde Atlas UI → **Create Search Index** → **JSON Editor**:
-
-   ```json
-   {
-     "name": "vector_index",
-     "type": "vectorSearch",
-     "definition": {
-       "fields": [
-         { "type": "vector", "path": "embedding", "numDimensions": 768, "similarity": "cosine" },
-         { "type": "filter", "path": "owner" },
-         { "type": "filter", "path": "repository" }
-       ]
-     }
-   }
-   ```
-
-6. Espera a que el índice esté en estado **READY**.
-7. Verifica con:
-
-   ```bash
-   node "10 – Base de datos, scripts o estructura necesaria para reproducir el sistema/checkVectorIndex.js"
-   ```
-
-8. Prueba el chat en la aplicación. La respuesta debe seguir funcionando y la
-   búsqueda debe volver a usar vectores.
-
-> Si algo falla, el sistema no se cae: `ragService` usa búsqueda por palabras
-> clave y el chat sigue respondiendo.
+> Solo si decides **cambiar la dimensión** (por ejemplo a 768) debes eliminar y
+> recrear el índice con ese `numDimensions`. Si algo falla, el sistema no se cae:
+> `ragService` usa búsqueda por palabras clave y el chat sigue respondiendo.
 
 ---
 
@@ -296,9 +271,9 @@ recursos suficientes para el modelo. Es un plan B local.
 |---|---|---|
 | `No hay ningún proveedor de IA configurado` | Falta la clave en `.env` | Agrega `GEMINI_API_KEY` o `GROQ_API_KEY`. |
 | Gemini responde 404 | Modelo retirado o nombre incorrecto | Revisa `GEMINI_CHAT_MODEL`; usa un modelo que AI Studio muestre con nivel gratuito. |
-| Gemini responde 401 con clave `AQ.` | La clave de autorización nueva no siempre es aceptada por el endpoint compatible con OpenAI | Usa Groq como respaldo inmediato; si el chat debe ir por Gemini, hay que consumir el endpoint nativo con `x-goog-api-key`. |
+| Gemini responde 401 | Clave inválida o revocada | Verifica `GEMINI_API_KEY`; en este proyecto una clave `AQ.` funcionó con el endpoint compatible y con el nativo. |
 | Gemini responde 429 | Cuota gratuita agotada | Espera o usa Groq; el fallback es automático. |
-| `devolvió 3072 dimensiones y se esperaban 768` | Se usó el endpoint compatible en vez del nativo | Verifica `GEMINI_NATIVE_BASE_URL` y `GEMINI_EMBEDDING_DIMENSIONS=768`. |
+| `devolvió 3072 dimensiones y se esperaban 1536` | Se usó el endpoint compatible en vez del nativo | Verifica `GEMINI_NATIVE_BASE_URL` y `GEMINI_EMBEDDING_DIMENSIONS=1536`. |
 | La búsqueda responde en modo `keyword` | Índice vectorial ausente o dimensión distinta | Revisa el índice y ejecuta `npm run reindex`. |
 | `npm run reindex` falla | Falta `MONGODB_URI` o no hay documentos completados | Revisa `.env` y procesa al menos un documento. |
 | El chat funciona pero no cita fuentes | No hay fragmentos relevantes | Procesa documentos hasta el estado `completado`. |
@@ -313,7 +288,7 @@ recursos suficientes para el modelo. Es un plan B local.
 - [ ] `npm run ai:check` muestra Gemini primero.
 - [ ] `npm run ai:test` responde chat y embeddings.
 - [ ] `GROQ_API_KEY` configurada (respaldo).
-- [ ] Índice `vector_index` en 768 si los embeddings son de Gemini.
+- [ ] Índice `vector_index` en 1536 (la dimensión configurada para Gemini).
 - [ ] `npm run reindex` ejecutado sin errores.
 - [ ] Variables agregadas en Render y redeploy hecho.
 - [ ] `GET /api/health` muestra 2 flujos y los proveedores.
