@@ -10,9 +10,10 @@ const { ai } = require("../src/config/env");
  * Regenera todos los embeddings de los documentos completados con el
  * proveedor configurado actualmente.
  *
- * Es obligatorio ejecutarlo cuando se cambia de proveedor de embeddings
- * (por ejemplo, de OpenRouter 1536 dimensiones a Gemini 768) porque el índice
- * de Atlas Vector Search debe coincidir con la dimensión de los vectores.
+ * Es obligatorio ejecutarlo cuando se cambia de proveedor de embeddings,
+ * porque los vectores deben generarse con el mismo modelo que las consultas.
+ * La dimensión configurada debe coincidir con el índice de Atlas Vector Search
+ * (en este proyecto el índice usa 1536 dimensiones).
  *
  * Uso:
  *   cd backend

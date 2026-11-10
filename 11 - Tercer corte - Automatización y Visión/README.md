@@ -17,15 +17,15 @@ Esta carpeta concentra los entregables y evidencias del tercer corte de
 
 - **Semana 1:** completada (documento de arquitectura con diagrama).
 - **Semana 2:** implementada en código y probada con 18 pruebas unitarias.
-  Incluye las páginas de Notificaciones y Automatizaciones. Pendiente la prueba
-  en vivo con clave Gemini, la reindexación a 768 dimensiones y la actualización
-  de variables en Render.
+  Incluye las páginas de Notificaciones y Automatizaciones. Verificada en vivo
+  con Gemini (chat, embeddings y reindexación a 1536 dimensiones, la dimensión
+  del índice de Atlas). Pendiente replicar las variables nuevas en Render.
 - **Semana 3:** implementada y probada. Lectura de facturas y recibos (imagen o
   PDF) con confianza, guardado automático desde `0.85`, revisión manual, error
   claro para imágenes ilegibles y página **Facturas IA**. Evidencia real con
-  OpenRouter `google/gemini-2.5-flash`: factura completa con 98 % de confianza,
-  recibo incompleto al 70 % enviado a revisión e imagen ilegible rechazada con
-  HTTP 422. Las 26 pruebas del backend pasan.
+  OpenRouter `google/gemini-2.5-flash` y con Gemini `gemini-3.5-flash-lite`:
+  factura completa con 98 % de confianza, recibo incompleto enviado a revisión
+  e imagen ilegible rechazada con HTTP 422. Las 26 pruebas del backend pasan.
 
 ## Decisiones del grupo
 

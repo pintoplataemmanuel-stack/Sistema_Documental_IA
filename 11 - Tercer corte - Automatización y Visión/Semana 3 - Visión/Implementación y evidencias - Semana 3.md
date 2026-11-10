@@ -42,7 +42,7 @@ El alcance es un proceso real de la empresa: registrar los gastos de compras
 | Claves solo en variables de entorno | Cumplido | `backend/.env.example`; `.env` fuera de Git |
 | Imágenes de facturas no públicas | Cumplido | `/uploads/vision` responde 403 |
 | Pruebas unitarias | Cumplido | `backend/test/visionService.test.js` — 26 pruebas en total |
-| Resultados medidos con un proveedor real | Cumplido | OpenRouter `google/gemini-2.5-flash`, 3 documentos de prueba |
+| Resultados medidos con un proveedor real | Cumplido | OpenRouter `google/gemini-2.5-flash` y Gemini `gemini-3.5-flash-lite`, 3 documentos de prueba |
 
 ---
 
@@ -253,6 +253,26 @@ Salida real de la factura completa:
 }
 ```
 
+### 9.2.1 Verificación posterior con Gemini nativo
+
+Tras reemplazar la clave de OpenRouter por una clave de Gemini, se repitieron los
+tres casos directamente contra el proveedor `gemini-3.5-flash-lite`:
+
+| Documento | Resultado | Confianza | Decisión |
+|---|---|---|---|
+| Factura completa | Datos correctos (5 ítems, total $548.828) | **0.98** | Guardada automáticamente |
+| Recibo incompleto | Proveedor y fecha; sin NIT, número ni totales | **0.50** | Enviado a revisión (6 campos marcados) |
+| Imagen ilegible | Sin datos útiles | 0.00 | HTTP 422 con mensaje claro |
+
+La prueba confirma que el mismo flujo funciona con el proveedor principal
+(Gemini) y no solo con el respaldo. El recibo incompleto obtiene una confianza
+aún menor que con OpenRouter, por lo que la decisión de revisión se mantiene.
+
+Además se verificaron chat (`{"ok":true}`), embeddings
+(`gemini-embedding-001`, **1536 dimensiones**) y búsqueda vectorial real
+(`mode=vector`, similitud `0.8799`) sobre el índice de Atlas, que también usa
+1536 dimensiones. Los 43 fragmentos quedaron reindexados sin recrear el índice.
+
 ### 9.3 Flujo de revisión y confirmación (API real)
 
 | Paso | Resultado medido |
@@ -324,12 +344,13 @@ Demostración en clase:
 
 ## 11. Pendientes y recomendaciones
 
-- Ejecutar la prueba en vivo con una clave **Gemini** propia para no depender del
-  saldo de OpenRouter.
+- ~~Ejecutar la prueba en vivo con una clave **Gemini** propia para no depender
+  del saldo de OpenRouter.~~ Cumplido: chat, visión y embeddings verificados con
+  Gemini, y fragmentos reindexados a 1536 dimensiones.
 - Rotar la clave `AQ.` de Gemini que se compartió en el chat: debe considerarse
-  expuesta.
-- Configurar `VISION_MAX_TOKENS`/`VISION_MIN_CONFIDENCE` en Render y Vercel si se
-  cambian los valores por defecto.
+  expuesta. La clave nueva debe existir solo en las variables de entorno.
+- Replicar en Render las variables `GEMINI_*` y `EMBEDDINGS_PROVIDER=gemini`
+  (`GEMINI_EMBEDDING_DIMENSIONS=1536`); el `.env` local no se despliega.
 - Para la Semana 4: conectar el gasto confirmado con el motor de automatización
   (notificación y conciliación) y ejecutar la batería de 20 imágenes.
 

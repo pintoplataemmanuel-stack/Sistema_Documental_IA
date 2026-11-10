@@ -71,8 +71,9 @@ Prueba real de chat y embeddings contra el proveedor configurado:
 npm run ai:test
 ```
 
-Si cambias de proveedor de embeddings (por ejemplo de OpenRouter 1536 a Gemini
-768), regenera los vectores y recrea el índice de Atlas con la nueva dimensión:
+Si cambias de proveedor o de modelo de embeddings, regenera los vectores. La
+dimensión configurada debe coincidir con el índice de Atlas (en este proyecto
+el índice usa 1536 dimensiones):
 
 ```bash
 npm run reindex

@@ -34,8 +34,10 @@ function trimText(text, max = aiConfig.chatTextLimit) {
 }
 
 /**
- * Configuración de un proveedor de embeddings. Todos usan la API compatible
- * con OpenAI; Gemini y Ollama producen 768 dimensiones y OpenRouter 1536.
+ * Configuración de un proveedor de embeddings. Gemini y Ollama usan su API
+ * nativa; OpenRouter habla la API compatible con OpenAI. La dimensión de
+ * Gemini es configurable (768/1536/3072); en este proyecto se fija en 1536
+ * para coincidir con el índice de Atlas existente.
  */
 function buildEmbeddingProvider(name) {
   switch (name) {
