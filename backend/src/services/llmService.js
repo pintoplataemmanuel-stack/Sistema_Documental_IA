@@ -204,6 +204,19 @@ async function runJsonChain({ system, user, temperature = 0.1 }) {
  * Información pública de los proveedores configurados (sin exponer claves).
  */
 function getProviderStatus() {
+  let vision = [];
+  try {
+    vision = require("./visionService")
+      .getVisionProviderOrder()
+      .map((provider) => ({
+        name: provider.name,
+        model: provider.model,
+        baseUrl: provider.baseUrl,
+      }));
+  } catch {
+    vision = [];
+  }
+
   return {
     chat: getChatProviderOrder().map((provider) => ({
       name: provider.name,
@@ -211,6 +224,7 @@ function getProviderStatus() {
       baseUrl: provider.baseUrl,
     })),
     embeddings: require("./aiService").getEmbeddingInfo(),
+    vision,
   };
 }
 

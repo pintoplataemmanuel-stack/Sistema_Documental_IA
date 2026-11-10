@@ -9,7 +9,7 @@ Esta carpeta concentra los entregables y evidencias del tercer corte de
 |---|---|
 | `Semana 1 - Diseño` | [Inventario de flujos n8n, ruta de reemplazo, caso de visión y arquitectura](<Semana 1 - Diseño/Documento de arquitectura - Semana 1.md>). |
 | `Semana 2 - Motor de automatización` | [Implementación y evidencias](<Semana 2 - Motor de automatización/Implementación y evidencias - Semana 2.md>) y [guía de configuración de Gemini/Groq](<Semana 2 - Motor de automatización/Guía de configuración - Gemini y Groq.md>). |
-| `Semana 3 - Visión` | Captura, procesamiento de imágenes y resultados medidos (pendiente). |
+| `Semana 3 - Visión` | [Implementación y evidencias](<Semana 3 - Visión/Implementación y evidencias - Semana 3.md>): lectura de facturas con IA y resultados medidos. |
 | `Semana 4 - Integración` | Visión → automatización, pruebas con 20 imágenes, seguridad y despliegue (pendiente). |
 | `Semana 5 - Sustentación` | Documento técnico final, video y enlaces de demostración (pendiente). |
 
@@ -20,6 +20,12 @@ Esta carpeta concentra los entregables y evidencias del tercer corte de
   Incluye las páginas de Notificaciones y Automatizaciones. Pendiente la prueba
   en vivo con clave Gemini, la reindexación a 768 dimensiones y la actualización
   de variables en Render.
+- **Semana 3:** implementada y probada. Lectura de facturas y recibos (imagen o
+  PDF) con confianza, guardado automático desde `0.85`, revisión manual, error
+  claro para imágenes ilegibles y página **Facturas IA**. Evidencia real con
+  OpenRouter `google/gemini-2.5-flash`: factura completa con 98 % de confianza,
+  recibo incompleto al 70 % enviado a revisión e imagen ilegible rechazada con
+  HTTP 422. Las 26 pruebas del backend pasan.
 
 ## Decisiones del grupo
 

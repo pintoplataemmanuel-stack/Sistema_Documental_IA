@@ -7,6 +7,7 @@ const searchRoutes = require("./searchRoutes");
 const automationRoutes = require("./automationRoutes");
 const notificationRoutes = require("./notificationRoutes");
 const auditRoutes = require("./auditRoutes");
+const visionRoutes = require("./visionRoutes");
 
 // Todas las rutas de la API se montan aquí con el prefijo /api (en app.js)
 const router = express.Router();
@@ -18,5 +19,6 @@ router.use("/search", searchRoutes);
 router.use("/automation", automationRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/audit", auditRoutes);
+router.use("/vision", visionRoutes);
 
 module.exports = router;

@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import RepositoriesPage from './pages/RepositoriesPage';
 import DocumentsPage from './pages/DocumentsPage';
+import VisionPage from './pages/VisionPage';
 import RepositoryDetailPage from './pages/RepositoryDetailPage';
 import FileDetailPage from './pages/FileDetailPage';
 import SearchPage from './pages/SearchPage';
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/repos" element={<RepositoriesPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
+            <Route path="/vision" element={<VisionPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/automation" element={<AutomationPage />} />

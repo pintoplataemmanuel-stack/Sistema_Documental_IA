@@ -123,7 +123,7 @@ export default function DocumentsPage() {
                   <tr key={d._id}>
                     <td>
                       <div className="doc-cell">
-                        <span className={`sw-file ${d.fileType === 'pdf' ? 'tint-red' : d.fileType === 'docx' ? 'tint-blue' : 'tint-gray'}`}>
+                        <span className="sw-file tint-file">
                           <DocIcon size={16} />
                         </span>
                         <button

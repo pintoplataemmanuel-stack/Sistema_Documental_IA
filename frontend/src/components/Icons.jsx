@@ -112,6 +112,27 @@ export const ChevronRightIcon = (p) => (
   </Svg>
 );
 
+export const ScanIcon = (p) => (
+  <Svg {...p}>
+    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+    <path d="M7 8h6" />
+    <path d="M7 12h10" />
+    <path d="M7 16h8" />
+  </Svg>
+);
+
+export const ReceiptIcon = (p) => (
+  <Svg {...p}>
+    <path d="M5 3v18l2-1.5L9 21l2-1.5L13 21l2-1.5L17 21l2-1.5V3l-2 1.5L15 3l-2 1.5L11 3 9 4.5 7 3z" />
+    <path d="M8 8h8" />
+    <path d="M8 12h8" />
+    <path d="M8 16h4" />
+  </Svg>
+);
+
 export const HelpIcon = (p) => (
   <Svg {...p}>
     <circle cx="12" cy="12" r="9" />

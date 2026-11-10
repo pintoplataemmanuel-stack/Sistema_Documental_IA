@@ -1,10 +1,12 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   DashboardIcon,
   FolderIcon,
   FilesIcon,
   SearchIcon,
+  ScanIcon,
   LogoutIcon,
   SparklesIcon,
   HelpIcon,
@@ -15,6 +17,7 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: DashboardIcon, end: true },
   { to: '/repos', label: 'Repositorios', icon: FolderIcon },
   { to: '/documents', label: 'Documentos', icon: FilesIcon },
+  { to: '/vision', label: 'Facturas IA', icon: ScanIcon },
   { to: '/search', label: 'Búsqueda Inteligente', icon: SearchIcon },
   { to: '/notifications', label: 'Notificaciones', icon: AlertIcon },
   { to: '/automation', label: 'Automatizaciones', icon: SparklesIcon },
@@ -23,6 +26,35 @@ const NAV = [
 export default function Sidebar({ onOpenHelp }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const navRef = useRef(null);
+  const linkRefs = useRef([]);
+  const [pill, setPill] = useState({ top: 0, height: 0, visible: false });
+
+  // Mide la posición del enlace activo para deslizar la pastilla (estilo Linear).
+  useLayoutEffect(() => {
+    function measure() {
+      const index = NAV.findIndex(({ to, end }) =>
+        end ? pathname === to : pathname === to || pathname.startsWith(`${to}/`)
+      );
+      const el = linkRefs.current[index];
+      if (!el) {
+        setPill((prev) => (prev.visible ? { ...prev, visible: false } : prev));
+        return;
+      }
+      setPill({ top: el.offsetTop, height: el.offsetHeight, visible: true });
+    }
+
+    measure();
+    window.addEventListener('resize', measure);
+    const observer = new ResizeObserver(measure);
+    if (navRef.current) observer.observe(navRef.current);
+    return () => {
+      window.removeEventListener('resize', measure);
+      observer.disconnect();
+    };
+  }, [pathname]);
 
   function handleLogout() {
     logout();
@@ -52,12 +84,24 @@ export default function Sidebar({ onOpenHelp }) {
         </div>
 
         <div className="sb-section-label">Espacio de trabajo</div>
-        <nav className="sb-nav">
-          {NAV.map(({ to, label, icon: Icon, end }) => (
+        <nav className="sb-nav" ref={navRef}>
+          <span
+            className="sb-pill"
+            aria-hidden="true"
+            style={{
+              transform: `translateY(${pill.top}px)`,
+              height: pill.height,
+              opacity: pill.visible ? 1 : 0,
+            }}
+          />
+          {NAV.map(({ to, label, icon: Icon, end }, index) => (
             <NavLink
               key={to}
               to={to}
               end={end}
+              ref={(el) => {
+                linkRefs.current[index] = el;
+              }}
               className={({ isActive }) =>
                 `sb-link${isActive ? ' active' : ''}`
               }

@@ -39,6 +39,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Archivos subidos expuestos para descarga
+// Las imágenes de facturas (visión) son datos sensibles y NO se publican.
+app.use("/uploads/vision", (req, res) => {
+  res.status(403).json({
+    message:
+      "Las imágenes de facturas no están disponibles públicamente. Usa la API autenticada.",
+  });
+});
 app.use(
   "/uploads",
   express.static(path.join(__dirname, "..", "uploads"))

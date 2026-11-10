@@ -4,6 +4,7 @@ import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import RagChat from '../components/RagChat';
 import DocumentStatus from '../components/DocumentStatus';
+import AnimatedNumber from '../components/AnimatedNumber';
 import {
   FilesIcon,
   CheckIcon,
@@ -12,12 +13,6 @@ import {
   DocIcon,
   ChevronRightIcon,
 } from '../components/Icons';
-
-const TYPE_TINT = {
-  pdf: 'tint-red',
-  docx: 'tint-blue',
-  txt: 'tint-gray',
-};
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -65,7 +60,7 @@ export default function DashboardPage() {
         <div>
           <span className="page-eyebrow">Resumen general</span>
           <h2 className="page-title">Dashboard</h2>
-          <p className="muted sec-sub">
+          <p className="page-greeting">
             Hola {firstName}, este es el estado de tu archivo documental.
           </p>
         </div>
@@ -89,7 +84,9 @@ export default function DashboardPage() {
                   <Icon size={20} />
                 </span>
                 <span className="stat-info">
-                  <span className="stat-value">{value}</span>
+                  <span className="stat-value">
+                    <AnimatedNumber value={value} />
+                  </span>
                   <span className="stat-label">{label}</span>
                 </span>
               </button>
@@ -117,7 +114,7 @@ export default function DashboardPage() {
             <div className="card sw-list">
               {recent.map((doc) => (
                 <div key={doc._id} className="sw-row">
-                  <span className={`sw-file ${TYPE_TINT[doc.fileType] || 'tint-gray'}`}>
+                  <span className="sw-file tint-file">
                     <DocIcon size={18} />
                   </span>
                   <div className="sw-main">

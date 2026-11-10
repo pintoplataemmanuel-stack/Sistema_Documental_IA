@@ -26,6 +26,8 @@ module.exports = {
     model: process.env.OPENAI_MODEL || "deepseek/deepseek-chat",
     embeddingModel:
       process.env.OPENAI_EMBEDDING_MODEL || "openai/text-embedding-3-small",
+    // Modelo multimodal para la lectura de facturas (Semana 3).
+    visionModel: process.env.OPENAI_VISION_MODEL || "google/gemini-2.5-flash",
   },
   ai: {
     chunkSize: Number(process.env.AI_CHUNK_SIZE) || 1500,
@@ -50,6 +52,17 @@ module.exports = {
     chatTimeoutMs: Number(process.env.AI_CHAT_TIMEOUT_MS) || 60000,
     chatMaxRetries: Number(process.env.AI_CHAT_MAX_RETRIES) || 0,
 
+    // ---- Visión por computador (Semana 3) ----
+    vision: {
+      // Si la confianza es menor, el usuario debe revisar antes de guardar.
+      minConfidence: Number(process.env.VISION_MIN_CONFIDENCE) || 0.85,
+      timeoutMs: Number(process.env.VISION_TIMEOUT_MS) || 90000,
+      maxRetries: Number(process.env.VISION_MAX_RETRIES) || 0,
+      // Tope de tokens de salida. Evita que proveedores como OpenRouter
+      // rechacen la petición por reservar el máximo del modelo.
+      maxTokens: Number(process.env.VISION_MAX_TOKENS) || 4096,
+    },
+
     // Proveedor de embeddings. auto: Gemini -> Ollama -> OpenRouter.
     embeddingsProvider: process.env.EMBEDDINGS_PROVIDER || "auto",
     // Si se define, debe coincidir con la dimensión del índice de Atlas.
@@ -69,6 +82,7 @@ module.exports = {
       // Modelo estable y económico con nivel gratuito. Se puede fijar otro
       // (por ejemplo gemini-3.8-flash) con GEMINI_CHAT_MODEL.
       chatModel: process.env.GEMINI_CHAT_MODEL || "gemini-3.5-flash-lite",
+      visionModel: process.env.GEMINI_VISION_MODEL || "gemini-3.5-flash-lite",
       embeddingModel:
         process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001",
       embeddingDimensions:
